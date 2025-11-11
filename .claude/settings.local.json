@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.inverto.com)",
+      "WebSearch",
+      "WebFetch(domain:www.mckinsey.com)",
+      "WebFetch(domain:www.bcg.com)",
+      "WebFetch(domain:kpmg.com)",
+      "Bash(dir /B /S)",
+      "WebFetch(domain:unity-advisory.com)",
+      "WebFetch(domain:www.ft.com)",
+      "WebFetch(domain:hbr.org)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

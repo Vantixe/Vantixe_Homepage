@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="466.9"
+   height="118.56"
+   preserveAspectRatio="xMidYMid"
+   version="1.0"
+   viewBox="0 0 350.17 88.919"
+   zoomAndPan="magnify"
+   id="svg15"
+   sodipodi:docname="Vantixe Logo_BOLD Slogan-v2_Master Indigo.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview15"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.4371386"
+     inkscape:cx="180.56714"
+     inkscape:cy="-22.266468"
+     inkscape:window-width="1440"
+     inkscape:window-height="830"
+     inkscape:window-x="1273"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg15" />
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient1"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#1a1a1a;stop-opacity:1;"
+         offset="0"
+         id="stop1" />
+      <stop
+         style="stop-color:#1a1a1a;stop-opacity:0;"
+         offset="1"
+         id="stop2" />
+    </linearGradient>
+    <clipPath
+       id="239566c340">
+      <path
+         d="m 12.191,189.74 h 350.17 v 20.645 H 12.191 Z"
+         id="path1" />
+    </clipPath>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1"
+       id="radialGradient2"
+       cx="175.08594"
+       cy="78.596599"
+       fx="175.08594"
+       fy="78.596599"
+       r="171.36707"
+       gradientTransform="matrix(1,0,0,0.02794002,0,76.400608)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     transform="translate(-12.191 -121.47)"
+     fill="#165d7b"
+     id="g10"
+     style="fill:#0a8aad;fill-opacity:1">
+    <g
+       transform="translate(14.291 183.34)"
+       id="g3"
+       style="fill:#0a8aad;fill-opacity:1">
+      <path
+         d="m23.844 0-25.938-61.875h15.891l15.609 40.656 15.594-40.656h15.906l-25.953 61.875z"
+         id="path3"
+         style="fill:#0a8aad;fill-opacity:1" />
+    </g>
+    <g
+       transform="translate(73.091 183.34)"
+       id="g4"
+       style="fill:#0a8aad;fill-opacity:1">
+      <path
+         d="m35.922-61.875 24.984 61.875h-15.156l-4.5781-12.375h-23.547l-4.5781 12.375h-15.141l24.969-61.875zm0.45312 37.125-6.9062-18h-0.14062l-6.9062 18z"
+         id="path4"
+         style="fill:#0a8aad;fill-opacity:1" />
+    </g>
+    <g
+       transform="translate(131.89 183.34)"
+       id="g5"
+       style="fill:#0a8aad;fill-opacity:1">
+      <path
+         d="m18.594-38.406v38.406h-14.094v-61.875h14.094l24.609 38.406h0.14062v-38.406h14.109v61.875h-14.109l-24.594-38.406z"
+         id="path5"
+         style="fill:#0a8aad;fill-opacity:1" />
+    </g>
+    <g
+       transform="translate(193.84 183.34)"
+       id="g6"
+       style="fill:#0a8aad;fill-opacity:1">
+      <path
+         d="m0.59375-49.5v-12.375h43.5v12.375h-14.688v49.5h-14.109v-49.5z"
+         id="path6"
+         style="fill:#0a8aad;fill-opacity:1" />
+    </g>
+    <g
+       transform="translate(238.54 183.34)"
+       id="g7"
+       style="fill:#0a8aad;fill-opacity:1">
+      <path
+         d="m18.594-61.875v61.875h-14.094v-61.875z"
+         id="path7"
+         style="fill:#0a8aad;fill-opacity:1" />
+    </g>
+    <g
+       transform="translate(261.64 183.34)"
+       id="g8"
+       style="fill:#0a8aad;fill-opacity:1">
+      <path
+         d="m62.406 0h-18.234l-14.625-21.078-14.625 21.078h-17.469l23.391-33.297-19.5-28.578h16.812l11.391 16.875 11.406-16.875h17.547l-20.25 28.578z"
+         id="path8"
+         style="fill:#0a8aad;fill-opacity:1" />
+    </g>
+    <g
+       transform="translate(321.49 183.34)"
+       id="g9"
+       style="fill:#0a8aad;fill-opacity:1">
+      <path
+         d="m39.906-61.875v12.375h-21.312v12.297h20.406v12.375h-20.406v12.453h21.312v12.375h-35.406v-61.875z"
+         id="path9"
+         style="fill:#0a8aad;fill-opacity:1" />
+    </g>
+  </g>
+  <g
+     transform="translate(-10.912 -10.12)"
+     fill="#fff"
+     id="g13">
+    <g
+       transform="translate(140.51 204.94)"
+       id="g11" />
+    <g
+       transform="translate(257.96 204.94)"
+       id="g12" />
+  </g>
+  <g
+     transform="translate(-12.165115,-121.42592)"
+     clip-path="url(#239566c340)"
+     id="g2"
+     style="fill:#0a8aad;fill-opacity:1">
+    <path
+       d="m 12.191,189.74 h 350.21 v 20.645 H 12.191 Z"
+       fill="#165d7b"
+       id="path2"
+       style="fill:#0a8aad;fill-opacity:1" />
+  </g>
+  <g
+     fill="#01afb0"
+     font-family="'League Spartan'"
+     id="g15"
+     style="fill:#ffffff;fill-opacity:1"
+     transform="translate(0.02588417,0.04408975)">
+    <text
+       transform="scale(0.75)"
+       font-size="17.333px"
+       style="font-variation-settings:'wght' 700;white-space:pre;shape-inside:url(#rect2);display:inline;fill:#ffffff;fill-opacity:1"
+       xml:space="preserve"
+       id="text13" />
+    <text
+       x="3.0118623"
+       y="83.216599"
+       font-size="14px"
+       letter-spacing="2.685px"
+       stroke-width="1.7498"
+       style="line-height:0;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;font-variation-settings:'wght' 600;fill:#ffffff;paint-order:normal;fill-opacity:1"
+       xml:space="preserve"
+       id="text14"><tspan
+         x="3.0118623"
+         y="83.216599"
+         fill="#ffffff"
+         font-family="'League Spartan'"
+         font-size="14px"
+         letter-spacing="2.685px"
+         stroke-width="1.7498"
+         style="font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;font-variation-settings:'wght' 579;fill:#ffffff;fill-opacity:1"
+         id="tspan13">PROCUREMENT EXCELLENCE. DELIVERED.</tspan></text>
+    <text
+       transform="scale(0.75)"
+       font-size="18.667px"
+       letter-spacing="4px"
+       stroke-width="2.333"
+       style="line-height:0;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;font-variation-settings:'wght' 450;white-space:pre;shape-inside:url(#rect8);display:inline;fill:#ffffff;paint-order:normal;fill-opacity:1"
+       xml:space="preserve"
+       id="text15" />
+  </g>
+</svg>
