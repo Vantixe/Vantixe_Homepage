@@ -1,0 +1,35 @@
+# Internal notes and documentation (keep local only)
+.claude/
+Claude to read and follow.txt
+Improvements_Nov11.txt
+Services.txt
+CONTENT_MANAGEMENT_GUIDE.md
+CONTENT_MAP.md
+DEPLOYMENT_GUIDE.md
+FINAL_SUMMARY.md
+FT_INSIGHTS_ANALYSIS.md
+GITHUB_DEPLOYMENT.md
+IMPLEMENTATION_SUMMARY.md
+PROPOSED_ENHANCEMENTS.md
+QUICK_EDIT_GUIDE.md
+
+# Reference files (keep local only)
+Boutique consultancy firms give the Big Four a run for their money.pdf
+Vantixe_Colour_palette.png
+Vantixe Logo_BOLD Slogan-v2_Master Indigo.svg
+
+# System files
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.bak
