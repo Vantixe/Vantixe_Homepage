@@ -1060,7 +1060,7 @@ li {
 
   .hero {
     min-height: 70vh;
-    padding-top: var(--space-2xl);
+    padding-top: 120px;  /* Fixed padding to prevent navbar overlap on tablet */
   }
 
   .hero-cta {
@@ -1104,6 +1104,10 @@ li {
   .btn-lg {
     padding: var(--space-sm) var(--space-lg);
     font-size: var(--font-size-base);
+  }
+
+  .hero {
+    padding-top: 100px;  /* Ensure sufficient space above hero on mobile */
   }
 }
 
