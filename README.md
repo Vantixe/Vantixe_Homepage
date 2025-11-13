@@ -466,4 +466,3 @@ Copyright © 2025 Vantixe Advisory Limited. All rights reserved.
 
 **Built with attention to detail for top-tier professional consulting.**
 
-For questions or support, contact: michael.seitz@vantixe.com
