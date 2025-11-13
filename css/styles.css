@@ -1108,6 +1108,7 @@ li {
 
   .hero {
     padding-top: 100px;  /* Ensure sufficient space above hero on mobile */
+    padding-bottom: 48px;  /* Create breathing room below CTA buttons */
   }
 }
 
