@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+/* ===== Vantixe Design Tokens ===== */
+@theme inline {
+  /* Bright palette (Consulting) */
+  --color-primary: #0A8AAD;
+  --color-primary-dark: #005F73;
+  --color-accent-mint: #94D2BD;
+  --color-accent-beige: #E9D8A6;
+  --color-cta: #EE9B00;
+  --color-cta-hover: #CA6702;
+  --color-text-primary: #001219;
+  --color-text-secondary: #33415C;
+  --color-text-muted: #5C677D;
+  --color-bg-light: #F8F9FA;
+  --color-bg-navy: #33415C;
+
+  /* Dark palette (Technology) */
+  --color-dark-bg: #001219;
+  --color-dark-surface: #0D1B2A;
+  --color-dark-elevated: #1B2A3B;
+  --color-accent-cyan: #00B4D8;
+  --color-dark-text: #E0E7EE;
+  --color-dark-muted: rgba(255, 255, 255, 0.6);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Spacing */
+  --spacing-section: 96px;
+  --spacing-section-mobile: 64px;
+
+  /* Shadows */
+  --shadow-card: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-card-hover: 0 10px 25px rgba(0, 0, 0, 0.15);
+  --shadow-glow-mint: 0 0 20px rgba(148, 210, 189, 0.3);
+  --shadow-glow-cyan: 0 0 20px rgba(0, 180, 216, 0.3);
+}
+
+/* ===== Base Styles ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background: #ffffff;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Animated Gradient Text ===== */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent-mint), var(--color-accent-cyan));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* ===== Status Badge Pulse ===== */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.5); }
+}
+
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ===== Floating Animation (Integration Hub) ===== */
+@keyframes levitate {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-levitate {
+  animation: levitate 3s ease-in-out infinite;
+}
+
+/* ===== Glassmorphism Utility ===== */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-bright {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Glow Effects ===== */
+.glow-mint {
+  box-shadow: 0 0 20px rgba(148, 210, 189, 0.3), 0 0 40px rgba(148, 210, 189, 0.1);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 180, 216, 0.3), 0 0 40px rgba(0, 180, 216, 0.1);
+}
+
+/* ===== Section Utilities ===== */
+.section-padding {
+  padding-top: var(--spacing-section);
+  padding-bottom: var(--spacing-section);
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding-top: var(--spacing-section-mobile);
+    padding-bottom: var(--spacing-section-mobile);
+  }
+}

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Negotiation Email Mockup</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafb; color: #1a1a2e; }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar { width: 200px; background: #f0f4f8; border-right: 1px solid #e2e8f0; padding: 20px 0; flex-shrink: 0; }
+  .sidebar-logo { color: #0A8AAD; font-weight: 700; font-size: 18px; padding: 0 20px 24px; letter-spacing: -0.5px; }
+  .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; font-size: 13px; color: #64748b; cursor: default; }
+  .sidebar-item.active { color: #0A8AAD; background: #e0f2fe; border-right: 3px solid #0A8AAD; font-weight: 600; }
+  .sidebar-item svg { width: 16px; height: 16px; opacity: 0.6; }
+  .sidebar-bottom { margin-top: auto; padding: 20px; border-top: 1px solid #e2e8f0; }
+  .sidebar-bottom span { font-size: 11px; color: #94a3b8; }
+
+  /* Main */
+  .main { flex: 1; padding: 0; }
+
+  /* Header bar */
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; border-bottom: 1px solid #e2e8f0; background: white; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-left .back { color: #94a3b8; font-size: 18px; }
+  .header-title { font-size: 18px; font-weight: 700; color: #1a1a2e; }
+  .header-subtitle { font-size: 12px; color: #94a3b8; }
+  .header-actions { display: flex; gap: 8px; }
+  .badge { padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-pending { background: #fef3c7; color: #92400e; }
+  .btn { padding: 6px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; border: none; cursor: default; }
+  .btn-green { background: #10b981; color: white; }
+  .btn-red { background: #ef4444; color: white; }
+
+  /* Stats row */
+  .stats { display: flex; gap: 0; padding: 0 32px; background: white; border-bottom: 1px solid #e2e8f0; }
+  .stat { padding: 16px 24px; border-right: 1px solid #e2e8f0; }
+  .stat:last-child { border-right: none; }
+  .stat-label { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-top: 2px; }
+  .stat-value.green { color: #10b981; }
+
+  /* Content area */
+  .content { display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0; }
+
+  /* Email section */
+  .email-section { padding: 24px 32px; border-right: 1px solid #e2e8f0; }
+  .email-header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .email-header svg { width: 18px; height: 18px; color: #64748b; }
+  .email-header span { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+  .email-subject { font-size: 12px; color: #64748b; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; }
+  .email-body { font-size: 12.5px; line-height: 1.7; color: #334155; }
+  .email-body p { margin-bottom: 12px; }
+  .email-body .highlight { font-weight: 600; color: #0A8AAD; }
+  .email-body .item { margin: 8px 0; padding-left: 0; }
+  .email-body .item-title { font-weight: 600; color: #1a1a2e; }
+
+  /* Strategy section */
+  .strategy-section { padding: 24px 32px; background: #fafbfc; }
+  .strategy-header { font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 16px; }
+  .strategy-label { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .strategy-item { font-size: 12px; color: #475569; line-height: 1.6; margin-bottom: 12px; padding-left: 12px; border-left: 2px solid #e2e8f0; }
+  .strategy-item strong { color: #1a1a2e; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar" style="display: flex; flex-direction: column;">
+    <div class="sidebar-logo">VANTIXE</div>
+    <div class="sidebar-item">Dashboard</div>
+    <div class="sidebar-item">Quotes</div>
+    <div class="sidebar-item">Sourcing Events</div>
+    <div class="sidebar-item active">Negotiations</div>
+    <div class="sidebar-item">Suppliers</div>
+    <div class="sidebar-item">Analytics</div>
+    <div class="sidebar-item">Settings</div>
+    <div class="sidebar-bottom">
+      <span>Quote Negotiation Agent v2.7</span>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <span class="back">&larr;</span>
+        <div>
+          <div class="header-title">Pacific Electronics Pte Ltd</div>
+          <div class="header-subtitle">Round 1/2 &middot; 2026-04-01</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="badge badge-pending">Pending Approval</span>
+        <button class="btn btn-green">&#x2713; Approve &amp; Send</button>
+        <button class="btn btn-red">&#x2717; Reject</button>
+      </div>
+    </div>
+
+    <!-- Stats - internal view for the buyer -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-label">Quoted Amount</div>
+        <div class="stat-value">$6,909.44</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Target Amount</div>
+        <div class="stat-value green">$5,850</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Potential Savings</div>
+        <div class="stat-value green">15.2%</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Approach</div>
+        <div class="stat-value">Price Reduction</div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Email -->
+      <div class="email-section">
+        <div class="email-header">
+          <span>Draft Negotiation Email</span>
+        </div>
+        <div class="email-subject">
+          RFQ Negotiation - Revised Pricing Request | Pacific Electronics Pte Ltd
+        </div>
+        <div class="email-body">
+          <p>Dear Pacific Electronics Team,</p>
+          <p>Thank you for your quotation for RFQ-2026-845. We appreciate the detail and responsiveness of your proposal and would like to work collaboratively toward an award.</p>
+          <p>After reviewing your submission, we would like to discuss revised pricing on the following items:</p>
+
+          <div class="item">
+            <span class="item-title">Item #1 - Injection Molded ABS Housing:</span> We would like to request a revised price of <span class="highlight">$12.50/unit</span> for this item, reflecting current market conditions for equivalent specifications and volumes.
+          </div>
+
+          <div class="item">
+            <span class="item-title">Item #2 - Hex Bolt M8x30mm:</span> We would like to request a revised price of <span class="highlight">$0.1050/unit</span> for this item, consistent with current market pricing for this specification.
+          </div>
+
+          <div class="item">
+            <span class="item-title">Item #3 - 4-Layer PCB Control Board:</span> We would like to request a revised price of <span class="highlight">$1.3500/unit</span> for this item, which we believe is achievable while maintaining your quality standards.
+          </div>
+
+          <p>We value your participation in this RFQ and would welcome the opportunity to strengthen our partnership. We look forward to receiving your revised pricing at your earliest convenience.</p>
+        </div>
+      </div>
+
+      <!-- Strategy -->
+      <div class="strategy-section">
+        <div class="strategy-header">Strategy</div>
+        <div class="strategy-label">Internal Analysis</div>
+
+        <div class="strategy-item">
+          <strong>Item #1 (ABS Housing):</strong> Quoted $23.47 vs best competing quote $4.01. Target $12.50 saves <strong>$10.97/unit (46.7%)</strong>. Still above competing offers - room for further rounds.
+        </div>
+
+        <div class="strategy-item">
+          <strong>Item #2 (Hex Bolt M8x30mm):</strong> Quoted $0.1575 vs best $0.1044. Target $0.1050 saves <strong>$0.0525/unit (33.3%)</strong>. Aligns with best available pricing in this RFQ.
+        </div>
+
+        <div class="strategy-item">
+          <strong>Item #3 (4-Layer PCB):</strong> Quoted $1.6397 vs best $1.1637. Target $1.3500 saves <strong>$0.2897/unit (17.7%)</strong>. Conservative target - can push further in round 2.
+        </div>
+
+        <div class="strategy-item">
+          <strong>Total projected savings:</strong> SGD 1,059 across 3 items (15.2% reduction on total submission). All targets backed by RFQ comparison data and historical pricing.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

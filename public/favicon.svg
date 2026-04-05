@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900">
+  <style>
+    path {
+      fill: #0B8AAD;
+    }
+  </style>
+  <path d="M806 99 L557 801 H343 L94 99 H276 L450 629 L625 99 Z"/>
+</svg>

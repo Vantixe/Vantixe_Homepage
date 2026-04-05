@@ -1,3 +1,31 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+
+# Production
+build/
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Env
+.env*.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
 # Internal notes and documentation (keep local only)
 .claude/
 Claude to read and follow.txt
@@ -15,6 +43,7 @@ IMPLEMENTATION_SUMMARY.md
 PROPOSED_ENHANCEMENTS.md
 QUICK_EDIT_GUIDE.md
 Homepage_Enhancement_Ideas.txt
+CREDENTIALS_CAROUSEL_PROJECT.md
 
 # Reference files (keep local only)
 Boutique consultancy firms give the Big Four a run for their money.pdf
@@ -22,6 +51,15 @@ Vantixe_Colour_palette.png
 Vantixe Logo_BOLD Slogan-v2_Master Indigo.svg
 Logo_No Slogan_Indigo.svg
 Screenshot*.png
+
+# Legacy static files (migrated to Next.js)
+index.html
+about.html
+services.html
+contact.html
+insights.html
+css/
+js/
 
 # System files
 .DS_Store
@@ -38,3 +76,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+nul
+
+.vercel
