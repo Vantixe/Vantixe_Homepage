@@ -14,7 +14,6 @@ interface NavLink {
 
 const consultingLinks: NavLink[] = [
   { label: 'Home', href: '/' },
-  { label: 'About', href: '/about' },
   {
     label: 'Services',
     href: '/services',
@@ -28,6 +27,7 @@ const consultingLinks: NavLink[] = [
       { label: 'AI-Enabled Solutions', href: '/services/digital-procurement' },
     ],
   },
+  { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ]
 
