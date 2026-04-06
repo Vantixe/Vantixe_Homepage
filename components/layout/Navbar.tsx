@@ -36,6 +36,8 @@ const techLinks: NavLink[] = [
   { label: 'TPRM', href: '/technology/tprm' },
   { label: 'Negotiation Agent', href: '/technology/negotiation-agent' },
   { label: 'Category Strategy', href: '/technology/category-strategy' },
+  { label: 'About', href: 'https://www.vantixe.com/about' },
+  { label: 'Contact', href: 'https://www.vantixe.com/contact' },
 ]
 
 export function Navbar() {
