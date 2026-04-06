@@ -313,7 +313,7 @@ export const servicePages: ServicePageData[] = [
     metaDescription: 'Procurement capability building and training programmes in Hong Kong. Competency assessment, procurement academies, coaching, Train-the-Trainer. Vantixe Advisory.',
   },
   {
-    slug: 'digital-procurement',
+    slug: 'ai-enabled-solutions',
     title: 'AI-Enabled Procurement Solutions',
     tagline: 'Custom AI Agents and Applications Built for Your Procurement Challenges',
     intro: 'Off-the-shelf procurement platforms solve generic problems. But the most impactful digital solutions are the ones designed around your specific processes, data, and decision points. Vantixe combines deep procurement domain expertise with hands-on technology development to build custom AI agents, workflow applications, and decision-support tools that solve the problems your existing systems cannot. We don\u2019t recommend software - we build it.',

@@ -51,7 +51,7 @@ const services = [
   {
     icon: '\uD83D\uDCBB',
     title: 'AI-Enabled Procurement Solutions',
-    slug: 'digital-procurement',
+    slug: 'ai-enabled-solutions',
     description:
       'Custom AI agents, workflow applications, and decision-support tools built for your specific procurement challenges. We don\u2019t recommend software - we build it.',
   },

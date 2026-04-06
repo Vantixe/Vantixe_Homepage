@@ -104,7 +104,7 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 | `/services/supplier-management` | Supplier Management detail |
 | `/services/risk-management` | Risk Management detail |
 | `/services/capability-building` | Capability Building detail |
-| `/services/digital-procurement` | AI-Enabled Solutions detail |
+| `/services/ai-enabled-solutions` | AI-Enabled Solutions detail |
 | `/contact` | Contact info, booking link |
 | `/insights` | Placeholder (noindex) |
 

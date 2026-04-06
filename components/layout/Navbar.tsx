@@ -24,7 +24,7 @@ const consultingLinks: NavLink[] = [
       { label: 'Supplier Management', href: '/services/supplier-management' },
       { label: 'Risk Management', href: '/services/risk-management' },
       { label: 'Capability Building', href: '/services/capability-building' },
-      { label: 'AI-Enabled Solutions', href: '/services/digital-procurement' },
+      { label: 'AI-Enabled Solutions', href: '/services/ai-enabled-solutions' },
     ],
   },
   { label: 'About', href: '/about' },

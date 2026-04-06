@@ -57,7 +57,7 @@ const services = [
   {
     icon: '\uD83D\uDCBB',
     title: 'AI-Enabled Procurement Solutions',
-    slug: 'digital-procurement',
+    slug: 'ai-enabled-solutions',
     description:
       'Leverage technology and AI to modernize procurement processes. Custom-built applications for KYC automation, supplier risk monitoring, guided category strategy, spend analytics, and predictive modeling.',
   },
