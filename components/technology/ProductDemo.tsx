@@ -84,7 +84,7 @@ export function ProductDemo({
           </div>
           <div className="flex-1 flex justify-center">
             <div className="bg-white/5 rounded-md px-4 py-1 text-xs text-white/40 font-mono">
-              tprm.vantixe.com
+              Live Product Demo
             </div>
           </div>
           {/* Pause indicator */}
