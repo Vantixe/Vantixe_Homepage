@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         destination: '/services/ai-enabled-solutions',
         permanent: true,
       },
+      {
+        source: '/index.html',
+        destination: '/',
+        permanent: true,
+      },
     ]
   },
 };
