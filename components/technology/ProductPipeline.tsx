@@ -21,7 +21,7 @@ export function ProductPipeline() {
             >
               <div className="w-20 h-20 rounded-2xl glass flex items-center justify-center text-3xl border border-accent-mint/20 hover:border-accent-mint/50 transition-colors">
                 {product.id === 'tprm' && '\uD83D\uDEE1\uFE0F'}
-                {product.id === 'negotiation-agent' && '\uD83E\uDD16'}
+                {product.id === 'sourcing-agent' && '\uD83E\uDD16'}
                 {product.id === 'category-strategy' && '\uD83C\uDFAF'}
               </div>
               <div className="text-center">
@@ -63,7 +63,7 @@ export function ProductPipeline() {
             >
               <div className="w-16 h-16 rounded-xl glass flex items-center justify-center text-2xl border border-accent-mint/20 flex-shrink-0">
                 {product.id === 'tprm' && '\uD83D\uDEE1\uFE0F'}
-                {product.id === 'negotiation-agent' && '\uD83E\uDD16'}
+                {product.id === 'sourcing-agent' && '\uD83E\uDD16'}
                 {product.id === 'category-strategy' && '\uD83C\uDFAF'}
               </div>
               <div>

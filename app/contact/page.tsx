@@ -5,6 +5,15 @@ export const metadata: Metadata = {
   title: 'Contact',
   description:
     'Get in touch with Vantixe Advisory. Schedule a meeting, send us an email, or visit our office in Hong Kong.',
+  alternates: {
+    canonical: 'https://www.vantixe.com/contact',
+  },
+  openGraph: {
+    title: 'Contact Vantixe Advisory',
+    description:
+      'Get in touch with Vantixe Advisory. Schedule a meeting, send us an email, or visit our office in Hong Kong.',
+    url: 'https://www.vantixe.com/contact',
+  },
 }
 
 const BOOKING_URL =

@@ -6,6 +6,15 @@ export const metadata: Metadata = {
   title: 'About',
   description:
     'Vantixe Advisory was founded by former KPMG Partner Michael Seitz to deliver expert-led procurement consulting without Big Four overhead.',
+  alternates: {
+    canonical: 'https://www.vantixe.com/about',
+  },
+  openGraph: {
+    title: 'About Vantixe Advisory',
+    description:
+      'Vantixe Advisory was founded by former KPMG Partner Michael Seitz to deliver expert-led procurement consulting without Big Four overhead.',
+    url: 'https://www.vantixe.com/about',
+  },
 }
 
 const BOOKING_URL =

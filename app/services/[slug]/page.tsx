@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { servicePages } from '@/lib/services'
+import { serviceFaqs } from '@/lib/faqs'
 import { ServicePageLayout } from '@/components/consulting/ServicePageLayout'
+import { FAQSchema } from '@/components/layout/FAQSchema'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -22,6 +24,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: `https://www.vantixe.com/services/${service.slug}`,
     },
+    openGraph: {
+      title: service.metaTitle,
+      description: service.metaDescription,
+      url: `https://www.vantixe.com/services/${service.slug}`,
+    },
   }
 }
 
@@ -31,5 +38,12 @@ export default async function ServiceDetailPage({ params }: Props) {
 
   if (!service) notFound()
 
-  return <ServicePageLayout data={service} />
+  const faqs = serviceFaqs[service.slug]
+
+  return (
+    <>
+      {faqs && <FAQSchema faqs={faqs} />}
+      <ServicePageLayout data={service} />
+    </>
+  )
 }

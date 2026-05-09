@@ -1,48 +1,61 @@
 import type { Metadata } from 'next'
 import { ProductPageLayout } from '@/components/technology/ProductPageLayout'
 import { ProductDemo } from '@/components/technology/ProductDemo'
+import { FAQSchema } from '@/components/layout/FAQSchema'
 import { FadeInView } from '@/components/animations/FadeInView'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { Card } from '@/components/ui/Card'
 import { products } from '@/lib/products'
+import { productFaqs } from '@/lib/faqs'
 
 export const metadata: Metadata = {
-  title: 'Quote Negotiation Agent',
+  title: 'Sourcing Agent',
   description:
-    'AI-powered procurement automation that monitors your inbox, extracts supplier quotes in <30s, benchmarks pricing with 4-level analysis, and drafts negotiation emails autonomously.',
+    'AI agent that runs your full sourcing cycle - build the RFQ, distribute to suppliers, collect responses (form or email), benchmark prices, draft and send negotiations, and recur on schedule.',
+  alternates: {
+    canonical: 'https://vantixe.ai/sourcing-agent',
+  },
+  openGraph: {
+    title: 'Sourcing Agent',
+    description:
+      'AI agent that runs your full sourcing cycle - build the RFQ, distribute to suppliers, collect responses (form or email), benchmark prices, draft and send negotiations, and recur on schedule.',
+    url: 'https://vantixe.ai/sourcing-agent',
+  },
 }
 
-const agent = products.find((p) => p.id === 'negotiation-agent')!
+const agent = products.find((p) => p.id === 'sourcing-agent')!
 
 const demoSlides = [
   {
-    image: '/images/demos/negotiation-agent/dashboard.png',
+    image: '/images/demos/sourcing-agent/dashboard.png',
     label: 'Full Visibility',
-    title: 'Your Negotiation Pipeline at a Glance',
-    description: 'No more pricing data trapped in email threads. The dashboard gives buyers a single view of all active sourcing events, incoming quotes and cumulative savings - replacing spreadsheets and inbox searching.',
+    title: 'Your Sourcing Pipeline at a Glance',
+    description: 'No more pricing data trapped in email threads. The dashboard gives buyers a single view of every active sourcing event - inbound or outbound - with incoming quotes and cumulative savings in one place.',
   },
   {
-    image: '/images/demos/negotiation-agent/sourcing-events.png',
+    image: '/images/demos/sourcing-agent/sourcing-events.png',
     label: 'Automatic Organisation',
     title: 'Quotes Grouped Into Sourcing Events',
-    description: 'The agent monitors your inbox 24/7, extracts quotes from PDF, Excel and Word attachments, and automatically groups them by RFQ. What used to take hours of manual sorting happens in seconds.',
+    description: 'Whether suppliers respond via the structured form or by email reply, every quote lands in the same RFQ-grouped view. Side-by-side comparison across all responding suppliers, no manual sorting required.',
   },
   {
-    image: '/images/demos/negotiation-agent/quote-comparison.png',
+    image: '/images/demos/sourcing-agent/quote-comparison.png',
     label: 'Instant Benchmarking',
     title: 'Every Price Benchmarked Across Suppliers',
     description: 'Line-item-level comparison across all responding suppliers. Instantly see who is cheapest, who is most expensive and where the negotiation opportunities are - across every item in the RFQ.',
   },
   {
-    image: '/images/demos/negotiation-agent/draft-email.png',
+    image: '/images/demos/sourcing-agent/draft-email.png',
     label: 'AI-Composed',
     title: 'Data-Backed Negotiation, Ready to Send',
-    description: 'The agent drafts a professional negotiation email with target prices derived from the 4-level price analysis: RFQ-level comparison, same-supplier history, cross-supplier market data and part number matches. The internal strategy brief shows the buyer the full rationale and savings potential.',
+    description: 'The agent drafts a professional negotiation email with target prices derived from a 4-level price analysis: RFQ-level comparison, same-supplier history, cross-supplier market data and part number matches. The internal strategy brief shows the buyer the full rationale and savings potential.',
   },
 ]
 
-export default function NegotiationAgentPage() {
+export default function SourcingAgentPage() {
   return (
+    <>
+    <FAQSchema faqs={productFaqs['sourcing-agent']} />
     <ProductPageLayout
       product={agent}
       ctaText="See It In Action"
@@ -54,8 +67,8 @@ export default function NegotiationAgentPage() {
           <FadeInView>
             <SectionHeading
               label="How It Works"
-              title="A 9-Step Autonomous Pipeline"
-              subtitle="From the moment a supplier email arrives to the negotiation response being sent, the agent handles each step with full auditability."
+              title="A 7-Step Sourcing Lifecycle"
+              subtitle="From building the RFQ to closing the cycle, the agent handles each step with full auditability - and runs again on schedule."
               dark
               centered
             />
@@ -76,7 +89,7 @@ export default function NegotiationAgentPage() {
                   </div>
                   {i < pipeline.length - 1 && (
                     <span className="text-accent-mint hidden md:block">
-                      {'\u25B6'}
+                      {'▶'}
                     </span>
                   )}
                 </div>
@@ -93,7 +106,7 @@ export default function NegotiationAgentPage() {
             <SectionHeading
               label="Capabilities"
               title="Built for Procurement Teams"
-              subtitle="Every feature is designed to save your buyers time, surface pricing insights, and maintain full control over what gets sent to suppliers."
+              subtitle="Every feature is designed to save your buyers time, surface pricing insights, and maintain full control over what goes out to suppliers."
               dark
               centered
             />
@@ -148,95 +161,112 @@ export default function NegotiationAgentPage() {
         </div>
       </section>
     </ProductPageLayout>
+    </>
   )
 }
 
 const pipeline = [
-  { icon: '\uD83D\uDCE8', label: 'Fetch Email', sub: 'Scan inbox' },
-  { icon: '\uD83D\uDD0D', label: 'Classify', sub: 'Quote or not?' },
-  { icon: '\uD83D\uDCCB', label: 'Extract', sub: 'Parse line items' },
-  { icon: '\uD83D\uDCBE', label: 'Save Quote', sub: 'Store & index' },
-  { icon: '\uD83D\uDCCA', label: 'Analyze', sub: 'Price benchmark' },
-  { icon: '\uD83C\uDFAF', label: 'Strategize', sub: 'Pick approach' },
-  { icon: '\u270D\uFE0F', label: 'Compose', sub: 'Draft response' },
-  { icon: '\u2705', label: 'Threshold', sub: 'Auto or approve' },
-  { icon: '\uD83D\uDCE4', label: 'Send/Queue', sub: 'Act or escalate' },
+  { icon: '📋', label: 'Build RFQ', sub: 'Items, suppliers, terms' },
+  { icon: '📤', label: 'Distribute', sub: 'Tokenized links' },
+  { icon: '📥', label: 'Collect', sub: 'Form or email' },
+  { icon: '📊', label: 'Benchmark', sub: '4-level analysis' },
+  { icon: '✍️', label: 'Negotiate', sub: 'AI-drafted' },
+  { icon: '✅', label: 'Approve & Send', sub: 'Threshold gates' },
+  { icon: '🔁', label: 'Repeat', sub: 'Recurring templates' },
 ]
 
 const features = [
   {
-    icon: '\uD83D\uDCE7',
-    title: 'Intelligent Inbox Monitoring',
+    icon: '📋',
+    title: 'RFQ Builder',
     description:
-      'Connects to your Microsoft 365 mailbox and automatically identifies supplier quote emails, filtering out noise. Supports historical backfill to build pricing intelligence from day one.',
+      'Single-page builder for line items, suppliers, deadlines, T&Cs and attachments. Excel template import or clone-from-template for recurring sourcing cycles.',
   },
   {
-    icon: '\uD83D\uDCC4',
+    icon: '📤',
+    title: 'Tokenized Supplier Distribution',
+    description:
+      'Invitation emails sent from your own mailbox with HMAC-signed response links. Suppliers complete a structured form - no login, no shared passwords, deadline-bound access.',
+  },
+  {
+    icon: '📥',
+    title: 'Dual-Channel Collection',
+    description:
+      'Suppliers respond via the structured form or by email reply. Both feed the same Quote pipeline so buyers see one unified view regardless of how the supplier responded.',
+  },
+  {
+    icon: '📄',
     title: 'Multi-Format Document Extraction',
     description:
-      'Reads quotes from PDF, Excel, and Word attachments. AI-powered extraction pulls supplier names, quote numbers, line items, quantities, unit prices, and totals with high confidence scoring.',
+      'Reads quotes from PDF, Excel and Word attachments. AI-powered extraction pulls supplier names, quote numbers, line items, quantities, unit prices and totals with high confidence scoring.',
   },
   {
-    icon: '\uD83D\uDCC8',
+    icon: '📈',
     title: '4-Level Price Analysis',
     description:
-      'Benchmarks every quoted price using RFQ-level comparison, same-supplier history, cross-supplier market data, and part number matching. Calculates optimal target prices automatically.',
+      'Benchmarks every quoted price using RFQ-level comparison, same-supplier history, cross-supplier market data and part number matching. Calculates optimal target prices automatically.',
   },
   {
-    icon: '\uD83D\uDCE6',
+    icon: '📆',
     title: 'RFQ Grouping & Sourcing Events',
     description:
       'Automatically clusters related quotes into sourcing events. Compare suppliers side-by-side with line-item-level breakdowns and launch batch negotiations across all respondents.',
   },
   {
-    icon: '\uD83D\uDCDD',
+    icon: '📝',
     title: 'AI-Drafted Negotiations',
     description:
       'Generates professional negotiation emails with data-backed counteroffers. Every claim references real pricing data. A separate AI proofread pass ensures accuracy before anything is sent.',
   },
   {
-    icon: '\uD83D\uDEE1\uFE0F',
+    icon: '🛡️',
     title: 'Configurable Approval Workflows',
     description:
-      'Threshold gates control what sends automatically vs. what gets queued for human review. Rules based on dollar amount, extraction confidence, supplier familiarity, and discount depth.',
+      'Threshold gates control what sends automatically vs. what gets queued for human review. Rules based on dollar amount, extraction confidence, supplier familiarity and discount depth.',
+  },
+  {
+    icon: '🔁',
+    title: 'Recurring Sourcing Templates',
+    description:
+      'Named templates with frequency, linked items and suppliers. The scheduler creates a draft RFQ on each cycle - or auto-distributes if you trust the template.',
   },
 ]
 
 const safety = [
   {
-    icon: '\uD83D\uDD12',
+    icon: '🔒',
     title: 'Human-in-the-Loop by Default',
     description:
       'Emails are queued for approval unless all auto-send criteria are met. You decide the thresholds.',
   },
   {
-    icon: '\uD83D\uDEAB',
+    icon: '🚫',
     title: 'Data-Backed Only',
     description:
       'Every negotiation strategy and target price references real pricing data from your database. Strict guardrails ensure accuracy.',
   },
   {
-    icon: '\uD83D\uDD0D',
+    icon: '🔍',
     title: 'AI Proofread Pass',
     description:
       'Every composed email is verified by a second AI check for hallucinated claims before it reaches anyone.',
   },
   {
-    icon: '\uD83D\uDCDD',
+    icon: '📝',
     title: 'Full Audit Trail',
     description:
-      'Every pipeline step is logged with timestamps, confidence scores, and decision rationale.',
+      'Every pipeline step is logged with timestamps, confidence scores and decision rationale.',
   },
   {
-    icon: '\uD83C\uDFE2',
+    icon: '🏢',
     title: 'Multi-Tenant Isolation',
     description:
       'Row-level security ensures each client\'s data is completely isolated. No cross-tenant leakage.',
   },
   {
-    icon: '\uD83E\uDDEA',
-    title: 'Dry-Run Mode',
+    icon: '🔑',
+    title: 'Tokenized Supplier Access',
     description:
-      'Test the full pipeline without sending any real emails. Validate extraction and strategy before going live.',
+      'HMAC-signed response links expire at the RFQ deadline. No supplier login or portal account required.',
   },
 ]

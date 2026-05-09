@@ -114,7 +114,7 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 |-----------------|---------------|-------------|
 | `/` | `/technology` | Technology platform overview |
 | `/tprm` | `/technology/tprm` | TPRM product page (with demo carousel) |
-| `/negotiation-agent` | `/technology/negotiation-agent` | Negotiation Agent page (with demo carousel) |
+| `/sourcing-agent` | `/technology/sourcing-agent` | Sourcing Agent page (with demo carousel) |
 | `/category-strategy` | `/technology/category-strategy` | Category Strategy (coming soon) |
 
 ## Key Files
@@ -123,7 +123,7 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 |------|---------|
 | `middleware.ts` | Domain detection, path rewrites, cookie setting |
 | `lib/domains.ts` | Domain URLs and helper functions |
-| `lib/products.ts` | Product data (TPRM, Negotiation Agent, Category Strategy) |
+| `lib/products.ts` | Product data (TPRM, Sourcing Agent, Category Strategy) |
 | `lib/services.ts` | All 7 service page content |
 | `components/layout/Navbar.tsx` | Theme-aware navbar with dropdowns |
 | `components/technology/ProductDemo.tsx` | Screenshot carousel for product pages |

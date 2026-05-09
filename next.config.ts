@@ -9,6 +9,16 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/technology/negotiation-agent',
+        destination: '/technology/sourcing-agent',
+        permanent: true,
+      },
+      {
+        source: '/negotiation-agent',
+        destination: '/sourcing-agent',
+        permanent: true,
+      },
+      {
         source: '/index.html',
         destination: '/',
         permanent: true,

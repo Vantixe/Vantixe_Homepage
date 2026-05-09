@@ -10,6 +10,15 @@ export const metadata: Metadata = {
   title: 'Technology Platform',
   description:
     'AI-powered procurement technology by Vantixe. Enterprise-grade platforms for third-party risk management, quote negotiation, and category strategy.',
+  alternates: {
+    canonical: 'https://vantixe.ai/',
+  },
+  openGraph: {
+    title: 'Technology Platform',
+    description:
+      'AI-powered procurement technology by Vantixe. Enterprise-grade platforms for third-party risk management, quote negotiation, and category strategy.',
+    url: 'https://vantixe.ai/',
+  },
 }
 
 export default function TechnologyPage() {

@@ -124,7 +124,7 @@ export const servicePages: ServicePageData[] = [
       { title: 'End-to-End Scope', description: 'We don\u2019t stop at the strategy slide. We take our clients through assessment, design, detailed planning and transition support.' },
     ],
     relatedServices: [
-      { icon: '\uD83E\uDD16', title: 'Quote Negotiation Agent', description: 'See AI-augmented procurement in action - our autonomous agent that monitors, extracts, benchmarks and negotiates supplier quotes.', href: 'https://vantixe.ai/negotiation-agent' },
+      { icon: '\uD83E\uDD16', title: 'Sourcing Agent', description: 'See AI-augmented procurement in action - our autonomous agent that builds RFQs, distributes them to suppliers, collects responses, benchmarks pricing and drafts negotiations.', href: 'https://vantixe.ai/sourcing-agent' },
       { icon: '\uD83C\uDFAF', title: 'Category Management', description: 'Align your category approach to the new operating model.', href: '/services/category-management' },
       { icon: '\uD83D\uDCCA', title: 'Cost Optimization', description: 'Capture quick wins during and after transformation.', href: '/services/cost-optimization' },
     ],
@@ -358,7 +358,7 @@ export const servicePages: ServicePageData[] = [
     metaDescription: 'Custom AI agents and procurement applications built for your specific requirements. Consulting+ deliverables, spend analytics, supplier risk monitoring, workflow automation. Vantixe Advisory.',
     techCallout: {
       title: 'See Our Live Products',
-      description: 'In addition to custom solutions built during consulting engagements, we have developed enterprise-grade products that are deployed and proven - including our TPRM compliance platform and Quote Negotiation Agent.',
+      description: 'In addition to custom solutions built during consulting engagements, we have developed enterprise-grade products that are deployed and proven - including our TPRM compliance platform and Sourcing Agent.',
       buttonText: 'Explore Our Technology Platform',
       href: 'https://vantixe.ai',
     },

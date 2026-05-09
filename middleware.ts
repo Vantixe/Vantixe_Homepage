@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
       response = NextResponse.rewrite(new URL('/technology', request.url))
     } else if (
       pathname === '/tprm' ||
-      pathname === '/negotiation-agent' ||
+      pathname === '/sourcing-agent' ||
       pathname === '/category-strategy'
     ) {
       response = NextResponse.rewrite(

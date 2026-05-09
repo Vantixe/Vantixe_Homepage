@@ -4,6 +4,14 @@ export const metadata: Metadata = {
   title: 'Insights',
   description: 'Procurement insights and thought leadership from Vantixe Advisory.',
   robots: { index: false, follow: false },
+  alternates: {
+    canonical: 'https://www.vantixe.com/insights',
+  },
+  openGraph: {
+    title: 'Procurement Insights & Thought Leadership',
+    description: 'Procurement insights and thought leadership from Vantixe Advisory.',
+    url: 'https://www.vantixe.com/insights',
+  },
 }
 
 export default function InsightsPage() {

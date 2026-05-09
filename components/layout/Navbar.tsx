@@ -34,7 +34,7 @@ const consultingLinks: NavLink[] = [
 const techLinks: NavLink[] = [
   { label: 'Platform', href: '/technology' },
   { label: 'TPRM', href: '/technology/tprm' },
-  { label: 'Negotiation Agent', href: '/technology/negotiation-agent' },
+  { label: 'Sourcing Agent', href: '/technology/sourcing-agent' },
   { label: 'Category Strategy', href: '/technology/category-strategy' },
   { label: 'About', href: 'https://www.vantixe.com/about' },
   { label: 'Contact', href: 'https://www.vantixe.com/contact' },
@@ -86,8 +86,9 @@ export function Navbar() {
   }
 
   function isActive(link: NavLink) {
-    if (pathname === link.href) return true
-    if (link.children?.some((c) => pathname === c.href)) return true
+    const href = resolveHref(link.href)
+    if (pathname === href) return true
+    if (link.children?.some((c) => pathname === resolveHref(c.href))) return true
     return false
   }
 

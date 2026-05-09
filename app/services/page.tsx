@@ -6,6 +6,15 @@ export const metadata: Metadata = {
   title: 'Services',
   description:
     'Comprehensive procurement advisory services: cost optimization, transformation, category management, supplier management, risk management, digital procurement, and capability building.',
+  alternates: {
+    canonical: 'https://www.vantixe.com/services',
+  },
+  openGraph: {
+    title: 'Procurement Advisory Services',
+    description:
+      'Comprehensive procurement advisory services: cost optimization, transformation, category management, supplier management, risk management, digital procurement, and capability building.',
+    url: 'https://www.vantixe.com/services',
+  },
 }
 
 const BOOKING_URL =

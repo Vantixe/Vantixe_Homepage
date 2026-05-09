@@ -1,12 +1,23 @@
 import type { Metadata } from 'next'
+import { FAQSchema } from '@/components/layout/FAQSchema'
 import { FadeInView } from '@/components/animations/FadeInView'
 import { GradientText } from '@/components/ui/GradientText'
 import { Button } from '@/components/ui/Button'
+import { productFaqs } from '@/lib/faqs'
 
 export const metadata: Metadata = {
   title: 'Category Strategy - Coming Mid-2026',
   description:
     'AI-guided category strategy development and execution. Coming mid-2026 from Vantixe.',
+  alternates: {
+    canonical: 'https://vantixe.ai/category-strategy',
+  },
+  openGraph: {
+    title: 'Category Strategy - Coming Mid-2026',
+    description:
+      'AI-guided category strategy development and execution. Coming mid-2026 from Vantixe.',
+    url: 'https://vantixe.ai/category-strategy',
+  },
 }
 
 const BOOKING_URL =
@@ -14,6 +25,8 @@ const BOOKING_URL =
 
 export default function CategoryStrategyPage() {
   return (
+    <>
+    <FAQSchema faqs={productFaqs['category-strategy']} />
     <div className="pt-[72px] min-h-screen flex items-center justify-center">
       <div className="max-w-[700px] mx-auto px-6 text-center section-padding">
         <FadeInView>
@@ -54,13 +67,14 @@ export default function CategoryStrategyPage() {
               <Button href="/technology/tprm" variant="ghost" className="text-accent-mint hover:text-white">
                 TPRM {'\u2192'}
               </Button>
-              <Button href="/technology/negotiation-agent" variant="ghost" className="text-accent-mint hover:text-white">
-                Negotiation Agent {'\u2192'}
+              <Button href="/technology/sourcing-agent" variant="ghost" className="text-accent-mint hover:text-white">
+                Sourcing Agent {'\u2192'}
               </Button>
             </div>
           </div>
         </FadeInView>
       </div>
     </div>
+    </>
   )
 }

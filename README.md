@@ -19,7 +19,7 @@ Dual-domain website for Vantixe Advisory Limited - procurement consulting (vanti
 | Domain | Content |
 |--------|---------|
 | www.vantixe.com | Consulting - advisory services, founder profile, service detail pages |
-| vantixe.ai | Technology - TPRM platform, Negotiation Agent, Category Strategy |
+| vantixe.ai | Technology - TPRM platform, Sourcing Agent, Category Strategy |
 
 ## Local Development
 

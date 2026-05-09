@@ -61,7 +61,7 @@ export function StructuredData() {
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
     description:
-      'AI-powered procurement technology platform including TPRM (Third-Party Risk Management), Quote Negotiation Agent, and Category Strategy tools.',
+      'AI-powered procurement technology platform including TPRM (Third-Party Risk Management), Sourcing Agent, and Category Strategy tools.',
     offers: {
       '@type': 'Offer',
       availability: 'https://schema.org/InStock',

@@ -1,15 +1,26 @@
 import type { Metadata } from 'next'
 import { ProductPageLayout } from '@/components/technology/ProductPageLayout'
 import { ProductDemo } from '@/components/technology/ProductDemo'
+import { FAQSchema } from '@/components/layout/FAQSchema'
 import { FadeInView } from '@/components/animations/FadeInView'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { Card } from '@/components/ui/Card'
 import { products } from '@/lib/products'
+import { productFaqs } from '@/lib/faqs'
 
 export const metadata: Metadata = {
   title: 'TPRM - Third-Party Risk Management',
   description:
     'Enterprise-grade compliance platform: automated KYC, sanctions & PEP screening across 40+ lists, continuous monitoring for 200K entities, and AI-powered due diligence reports.',
+  alternates: {
+    canonical: 'https://vantixe.ai/tprm',
+  },
+  openGraph: {
+    title: 'TPRM - Third-Party Risk Management',
+    description:
+      'Enterprise-grade compliance platform: automated KYC, sanctions & PEP screening across 40+ lists, continuous monitoring for 200K entities, and AI-powered due diligence reports.',
+    url: 'https://vantixe.ai/tprm',
+  },
 }
 
 const tprm = products.find((p) => p.id === 'tprm')!
@@ -61,6 +72,8 @@ const demoSlides = [
 
 export default function TPRMPage() {
   return (
+    <>
+    <FAQSchema faqs={productFaqs['tprm']} />
     <ProductPageLayout
       product={tprm}
       ctaText="See TPRM in Action"
@@ -203,6 +216,7 @@ export default function TPRMPage() {
       </section>
 
     </ProductPageLayout>
+    </>
   )
 }
 

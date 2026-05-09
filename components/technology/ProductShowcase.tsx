@@ -6,7 +6,7 @@ import { products } from '@/lib/products'
 
 const demoImages: Record<string, string> = {
   tprm: '/images/demos/tprm/dashboard.png',
-  'negotiation-agent': '/images/demos/negotiation-agent/dashboard.png',
+  'sourcing-agent': '/images/demos/sourcing-agent/dashboard.png',
 }
 
 export function ProductShowcase() {

@@ -13,9 +13,12 @@
 - Until .ai domain is purchased, `/technology/*` paths serve the dark tech pages on vantixe.com
 - Middleware rewrites vantixe.ai root → /technology when the domain is connected
 
+## Deployment
+- Read `DEPLOYMENT.md` for full infrastructure, DNS, and deployment details before making deployment-related changes or assumptions.
+
 ## Key Directories
 - `app/` — Next.js App Router pages
-- `app/technology/` — Dark-themed tech pages (TPRM, Negotiation Agent, Category Strategy)
+- `app/technology/` — Dark-themed tech pages (TPRM, Sourcing Agent, Category Strategy)
 - `components/consulting/` — Bright theme consulting sections
 - `components/technology/` — Dark theme tech sections
 - `components/ui/` — Shared UI components
