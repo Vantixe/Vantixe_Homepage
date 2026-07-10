@@ -1,17 +1,19 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { Button } from '@/components/ui/Button'
+import { ContactForm } from '@/components/contact/ContactForm'
 
 export const metadata: Metadata = {
   title: 'Contact',
   description:
-    'Get in touch with Vantixe Advisory. Schedule a meeting, send us an email, or visit our office in Hong Kong.',
+    'Get in touch with Vantixe Advisory. Request a quote, book a product demo, schedule a meeting, or leave us a message. We respond within one business day.',
   alternates: {
     canonical: 'https://www.vantixe.com/contact',
   },
   openGraph: {
     title: 'Contact Vantixe Advisory',
     description:
-      'Get in touch with Vantixe Advisory. Schedule a meeting, send us an email, or visit our office in Hong Kong.',
+      'Get in touch with Vantixe Advisory. Request a quote, book a product demo, schedule a meeting, or leave us a message. We respond within one business day.',
     url: 'https://www.vantixe.com/contact',
   },
 }
@@ -32,13 +34,13 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Contact Info */}
-      <section className="section-padding">
+      {/* Quick paths */}
+      <section className="pt-20 pb-12">
         <div className="max-w-[1000px] mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <div className="grid md:grid-cols-3 gap-8">
             {/* Schedule */}
             <div className="bg-white border-2 border-gray-100 rounded-xl p-8 text-center hover:border-primary/30 transition-colors">
-              <div className="text-3xl mb-4">{'\uD83D\uDCC5'}</div>
+              <div className="text-3xl mb-4">{'📅'}</div>
               <h3 className="text-lg font-bold text-text-primary mb-2">
                 Schedule a Meeting
               </h3>
@@ -52,7 +54,7 @@ export default function ContactPage() {
 
             {/* Email */}
             <div className="bg-white border-2 border-gray-100 rounded-xl p-8 text-center hover:border-primary/30 transition-colors">
-              <div className="text-3xl mb-4">{'\uD83D\uDCE7'}</div>
+              <div className="text-3xl mb-4">{'📧'}</div>
               <h3 className="text-lg font-bold text-text-primary mb-2">
                 Email Us
               </h3>
@@ -69,7 +71,7 @@ export default function ContactPage() {
 
             {/* Office */}
             <div className="bg-white border-2 border-gray-100 rounded-xl p-8 text-center hover:border-primary/30 transition-colors">
-              <div className="text-3xl mb-4">{'\uD83C\uDFE2'}</div>
+              <div className="text-3xl mb-4">{'🏢'}</div>
               <h3 className="text-lg font-bold text-text-primary mb-2">
                 Our Office
               </h3>
@@ -82,15 +84,29 @@ export default function ContactPage() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Note */}
-          <div className="bg-bg-light rounded-xl p-8 text-center">
-            <p className="text-text-muted text-sm">
-              Prefer a more detailed conversation? Schedule a meeting above or
-              send us an email describing your procurement challenges. We&apos;ll
-              come prepared with relevant experience and ideas.
-            </p>
+      {/* Divider */}
+      <section className="pb-4">
+        <div className="max-w-[1000px] mx-auto px-6">
+          <div className="flex items-center gap-4 text-text-muted/60 text-sm">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span>or leave us a message</span>
+            <div className="flex-1 h-px bg-gray-200" />
           </div>
+        </div>
+      </section>
+
+      {/* Inquiry form */}
+      <section id="form" className="pb-24 scroll-mt-24">
+        <div className="max-w-[820px] mx-auto px-6">
+          <Suspense fallback={<div className="h-[400px]" />}>
+            <ContactForm turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} />
+          </Suspense>
+          <p className="text-center text-xs text-text-muted/70 mt-6">
+            We respond within one business day. Please don&apos;t send confidential information via this form.
+          </p>
         </div>
       </section>
     </div>

@@ -12,11 +12,17 @@ export function ConsultingCTA() {
         </h2>
         <p className="text-lg text-white/85 mb-8">
           Let&apos;s discuss how Vantixe can deliver senior-level expertise without
-          the Big Four overhead. Schedule a consultation today.
+          the Big Four overhead. Book a meeting, or send us your brief and we&apos;ll
+          come back within one business day.
         </p>
-        <Button variant="primary" size="lg" href={BOOKING_URL} external>
-          Book a Meeting
-        </Button>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Button variant="primary" size="lg" href={BOOKING_URL} external>
+            Book a Meeting
+          </Button>
+          <Button variant="white" size="lg" href="/contact?topic=quote#form">
+            Request a Quote
+          </Button>
+        </div>
       </div>
     </section>
   )

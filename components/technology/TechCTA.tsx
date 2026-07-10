@@ -3,10 +3,17 @@
 import { Button } from '@/components/ui/Button'
 import { FadeInView } from '@/components/animations/FadeInView'
 
-const BOOKING_URL =
-  'https://outlook.office.com/book/MeetingsWithMichael@vantixe.com/?ismsaljsauthenabled'
+interface TechCTAProps {
+  showExplore?: boolean
+  /** Product slug to prefill the inquiry form (e.g. "tprm", "sourcing-agent"). */
+  product?: string
+}
 
-export function TechCTA({ showExplore = true }: { showExplore?: boolean }) {
+export function TechCTA({ showExplore = true, product }: TechCTAProps) {
+  const demoHref = product
+    ? `/contact?topic=demo&product=${product}#form`
+    : '/contact?topic=demo#form'
+
   return (
     <FadeInView>
       <div className="text-center">
@@ -16,8 +23,8 @@ export function TechCTA({ showExplore = true }: { showExplore?: boolean }) {
               Explore Our Full Platform
             </Button>
           )}
-          <Button href={BOOKING_URL} external variant="primary" size="lg">
-            Book a Technology Demo
+          <Button href={demoHref} variant="primary" size="lg">
+            Request a Demo
           </Button>
         </div>
       </div>

@@ -77,9 +77,14 @@ export function ProductPageLayout({
             <p className="text-white/60 mb-8">
               See&nbsp;{product.shortName}&nbsp;in action with your own data. We&apos;ll set up a pilot in days, not months.
             </p>
-            <Button href={BOOKING_URL} external variant="primary" size="lg">
-              Book a Meeting
-            </Button>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button href={BOOKING_URL} external variant="primary" size="lg">
+                Book a Meeting
+              </Button>
+              <Button href={`/contact?topic=demo&product=${product.id}#form`} variant="outline" size="lg">
+                Request a Demo
+              </Button>
+            </div>
           </FadeInView>
         </div>
       </section>
