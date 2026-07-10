@@ -4,6 +4,7 @@ import './globals.css'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { StructuredData } from '@/components/layout/StructuredData'
+import { GoogleTagManager } from '@/components/analytics/GoogleTagManager'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     'procurement transformation',
     'AI procurement',
     'TPRM',
-    'negotiation agent',
+    'sourcing agent',
     'Hong Kong',
   ],
   authors: [{ name: 'Vantixe Advisory Limited' }],
@@ -71,6 +72,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://www.vantixe.com" />
       </head>
       <body className="font-sans antialiased">
+        <GoogleTagManager />
         <Navbar />
         <main>{children}</main>
         <Footer />
