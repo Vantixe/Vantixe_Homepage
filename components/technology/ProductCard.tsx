@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { StatusBadge } from '@/components/ui/StatusBadge'
+import { ProductVideo } from '@/components/technology/ProductVideo'
 import { getTechUrl } from '@/lib/domains'
 import type { Product } from '@/lib/products'
 
@@ -9,9 +10,11 @@ interface ProductCardProps {
   product: Product
   /** Optional screenshot to show instead of placeholder */
   demoImage?: string
+  /** Ambient video preview, shown in place of the screenshot when present */
+  demoVideo?: { src: string; poster: string }
 }
 
-export function ProductCard({ product, demoImage }: ProductCardProps) {
+export function ProductCard({ product, demoImage, demoVideo }: ProductCardProps) {
   const href = getTechUrl(product.href)
 
   return (
@@ -22,7 +25,14 @@ export function ProductCard({ product, demoImage }: ProductCardProps) {
       {/* Demo area */}
       <div className="relative h-48 bg-gradient-to-br from-dark-surface to-dark-elevated flex items-center justify-center overflow-hidden flex-shrink-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(10,138,173,0.1)_0%,transparent_70%)]" />
-        {demoImage ? (
+        {demoVideo ? (
+          <ProductVideo
+            ambient
+            src={demoVideo.src}
+            poster={demoVideo.poster}
+            label={`${product.name} preview`}
+          />
+        ) : demoImage ? (
           <Image
             src={demoImage}
             alt={product.name}

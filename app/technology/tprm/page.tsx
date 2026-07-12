@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
 import { ProductPageLayout } from '@/components/technology/ProductPageLayout'
 import { ProductDemo } from '@/components/technology/ProductDemo'
+import { ProductVideo } from '@/components/technology/ProductVideo'
 import { FAQSchema } from '@/components/layout/FAQSchema'
+import { VideoSchema } from '@/components/layout/VideoSchema'
+import { DOMAINS } from '@/lib/domains'
 import { FadeInView } from '@/components/animations/FadeInView'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { Card } from '@/components/ui/Card'
@@ -74,10 +77,25 @@ export default function TPRMPage() {
   return (
     <>
     <FAQSchema faqs={productFaqs['tprm']} />
+    <VideoSchema
+      name="See TPRM in Action: Automated Third-Party Risk Management"
+      description="Automated supplier onboarding, sanctions and PEP screening, continuous monitoring and AI-powered due diligence with Vantixe TPRM."
+      contentUrl={`${DOMAINS.technology}/videos/tprm-promo.mp4`}
+      thumbnailUrl={`${DOMAINS.technology}/videos/tprm-promo-poster.jpg`}
+      uploadDate="2026-07-11"
+      duration="PT1M35S"
+    />
     <ProductPageLayout
       product={tprm}
       ctaText="See TPRM in Action"
-      demo={<ProductDemo slides={demoSlides} interval={6} className="mb-12" />}
+      demo={
+        <ProductVideo
+          src="/videos/tprm-promo.mp4"
+          poster="/videos/tprm-promo-poster.jpg"
+          label="See TPRM in action: automated third-party risk management"
+          className="mb-12"
+        />
+      }
     >
       {/* Workflow */}
       <section className="section-padding">
@@ -119,6 +137,26 @@ export default function TPRMPage() {
               </FadeInView>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Inside the platform */}
+      <section className="section-padding border-t border-white/5">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <FadeInView>
+            <SectionHeading
+              title="Inside the Platform"
+              subtitle="The screens your team works in every day: dashboards, screening results, AI analysis and monitoring."
+              dark
+              centered
+              className="mb-10"
+            />
+          </FadeInView>
+          <FadeInView>
+            <div className="max-w-[1000px] mx-auto">
+              <ProductDemo slides={demoSlides} interval={6} />
+            </div>
+          </FadeInView>
         </div>
       </section>
 
