@@ -146,7 +146,7 @@ export default function TPRMPage() {
           <FadeInView>
             <SectionHeading
               title="Inside the Platform"
-              subtitle="The screens your team works in every day: dashboards, screening results, AI analysis and monitoring."
+              subtitle="Screenshots from the platform: the KYC dashboard, supplier onboarding, sanctions screening, AI analysis and continuous monitoring."
               dark
               centered
               className="mb-10"
