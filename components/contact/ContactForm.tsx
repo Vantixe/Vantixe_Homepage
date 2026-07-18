@@ -17,7 +17,7 @@ const PRODUCT_OPTIONS = [
   { value: '', label: 'Select a product' },
   { value: 'tprm', label: 'TPRM: Third-Party Risk Management' },
   { value: 'sourcing-agent', label: 'Sourcing Agent: Quote Negotiation' },
-  { value: 'category-strategy', label: 'Category Strategy (mid-2026)' },
+  { value: 'category-strategy', label: 'Category Strategy: Guided Strategy Platform' },
   { value: 'all', label: 'The full platform' },
 ]
 
@@ -306,10 +306,10 @@ export function ContactForm({ turnstileSiteKey }: ContactFormProps) {
           <label htmlFor="companySize" className={labelClass}>Company size</label>
           <select id="companySize" name="companySize" defaultValue="" className={inputClass}>
             <option value="">Optional</option>
-            <option value="1-50">1–50 employees</option>
-            <option value="51-250">51–250</option>
-            <option value="251-1000">251–1,000</option>
-            <option value="1001-5000">1,001–5,000</option>
+            <option value="1-50">1-50 employees</option>
+            <option value="51-250">51-250</option>
+            <option value="251-1000">251-1,000</option>
+            <option value="1001-5000">1,001-5,000</option>
             <option value="5001+">5,001+</option>
           </select>
         </div>
@@ -325,7 +325,7 @@ export function ContactForm({ turnstileSiteKey }: ContactFormProps) {
             id="preferredTime"
             name="preferredTime"
             type="text"
-            placeholder="e.g. weekday mornings HKT, or Wed/Thu 2–5pm GMT"
+            placeholder="e.g. weekday mornings HKT, or Wed/Thu 2-5pm GMT"
             className={inputClass}
           />
         </div>

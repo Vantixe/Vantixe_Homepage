@@ -14,7 +14,7 @@ const INTENT_LABELS: Record<string, string> = {
 const PRODUCT_LABELS: Record<string, string> = {
   tprm: 'TPRM: Third-Party Risk Management',
   'sourcing-agent': 'Sourcing Agent: Quote Negotiation',
-  'category-strategy': 'Category Strategy (mid-2026)',
+  'category-strategy': 'Category Strategy: Guided Strategy Platform',
   all: 'The full platform',
 }
 

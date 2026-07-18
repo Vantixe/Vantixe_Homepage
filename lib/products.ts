@@ -62,14 +62,24 @@ export const products: Product[] = [
     id: 'category-strategy',
     name: 'Category Strategy',
     shortName: 'Category Strategy',
-    tagline: 'AI-guided category strategy development and execution',
+    tagline: 'AI-guided category strategy development and execution - from scattered slide decks to one living strategy',
     description:
-      'Intelligent tools that guide procurement teams through category strategy creation, market analysis, and execution planning - turning weeks of work into days.',
-    status: 'coming-soon',
-    statusLabel: '2026',
+      'A guided platform that takes procurement teams from category analysis to a tracked execution plan. AI pre-drafts every module from your documents, data and market intelligence - every claim cited, every decision approved by your team.',
+    status: 'live',
+    statusLabel: 'Live',
     href: '/technology/category-strategy',
-    stats: [],
-    features: [],
+    stats: [
+      { value: '21', label: 'Guided Modules' },
+      { value: '10+', label: 'Frameworks Built In' },
+      { value: '100%', label: 'AI Output Human-Approved' },
+      { value: 'End-to-End', label: 'Charter to Tracked Benefits' },
+    ],
+    features: [
+      'Guided 21-Module Methodology',
+      'Knowledge Repository & AI Drafting',
+      'Market & Cost Intelligence',
+      'Versioned Approvals & Exports',
+    ],
   },
 ]
 

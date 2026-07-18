@@ -7,6 +7,7 @@ import { products } from '@/lib/products'
 const demoImages: Record<string, string> = {
   tprm: '/images/demos/tprm/dashboard.png',
   'sourcing-agent': '/images/demos/sourcing-agent/dashboard.png',
+  'category-strategy': '/images/demos/category-strategy/portfolio.png',
 }
 
 // Products with a video get a silent moving preview in their card; the

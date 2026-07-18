@@ -204,14 +204,29 @@ export const productFaqs: Record<string, FAQItem[]> = {
   ],
   'category-strategy': [
     {
-      question: 'What is the Category Strategy application?',
+      question: 'What is the Category Strategy platform?',
       answer:
-        'It is an AI-guided tool that walks procurement teams through the full category strategy development process - from category profiling and market analysis through to strategy formulation and execution planning. It helps teams fast-track the strategy development process and redirect their time toward stakeholder alignment.',
+        'A guided web application that takes procurement teams through the full category strategy process: category profiling, market analysis, strategy development and execution planning, across 21 guided modules. It replaces the scattered Word and PowerPoint process with one living, versioned strategy per category that the whole organisation can review, comment on and approve.',
     },
     {
-      question: 'When will the Category Strategy application be available?',
+      question: 'How does the AI work, and can we trust its output?',
       answer:
-        'The Category Strategy application is currently in development and expected to launch in mid-2026. Contact us to register for early access or to discuss how our category management consulting service can support you in the meantime.',
+        'AI pre-drafts each module from your own documents, spend data and market intelligence. Every claim is cited to its source, every draft carries a confidence rating, and when evidence is thin the platform says so instead of inventing an answer. Nothing is saved automatically: your team accepts, edits or rejects suggestions field by field, and every decision is recorded in a tamper-evident audit trail.',
+    },
+    {
+      question: 'What data does the platform work with?',
+      answer:
+        'Your past strategies, market studies and reports (PowerPoint, Word, PDF, Excel), your spend data and contract register, public price indices with automatic freshness tracking, and AI web research. External feeds and APIs such as price index providers can be connected per client on request. Spend figures and price trends are always computed from data; AI writes only the narrative around them.',
+    },
+    {
+      question: 'How is the platform deployed and secured?',
+      answer:
+        'Each client gets an isolated deployment: own application, own database, hosted in the region you choose for full data residency. Sign-in uses your Microsoft Entra identity provider with your MFA policy, roles flow from your security groups, and role-based access limits everyone to the categories in their remit. Branding, category tree and performance measures are configured per client.',
+    },
+    {
+      question: 'How do we get started?',
+      answer:
+        'Request a demo and we will walk your team through the platform with realistic sample data. A pilot can be set up quickly: we configure your category tree and branding, load your spend and contract data, and your team builds its first strategies with our support alongside.',
     },
   ],
 }
