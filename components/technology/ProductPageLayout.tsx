@@ -1,10 +1,12 @@
 'use client'
 
+import Link from 'next/link'
 import { FadeInView } from '@/components/animations/FadeInView'
 import { GradientText } from '@/components/ui/GradientText'
 import { MetricsBar } from '@/components/ui/MetricsBar'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import { Button } from '@/components/ui/Button'
+import { CERTIFIED_COMPANY_PHRASE } from '@/lib/security'
 import type { Product } from '@/lib/products'
 
 const BOOKING_URL =
@@ -68,6 +70,31 @@ export function ProductPageLayout({
 
       {/* Page-specific content */}
       {children}
+
+      {/* Certification note.
+          Deliberately worded so the management system is the certified thing,
+          never the product. The certification body's conditions of use forbid
+          any claim that implies a product is certified, and require the phrase
+          below to appear without variation. See lib/security.ts. */}
+      <section className="py-10 border-t border-white/5">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <FadeInView>
+            <p className="text-sm text-white/50 leading-relaxed max-w-[820px]">
+              <span className="text-white/80 font-semibold">
+                {CERTIFIED_COMPANY_PHRASE}.
+              </span>{' '}
+              The certificate covers our information security management system,
+              including how this software is developed and operated.{' '}
+              <Link
+                href="/technology/security"
+                className="text-accent-mint hover:text-white transition-colors font-medium whitespace-nowrap"
+              >
+                Security details {'→'}
+              </Link>
+            </p>
+          </FadeInView>
+        </div>
+      </section>
 
       {/* CTA */}
       <section className="section-padding text-center">

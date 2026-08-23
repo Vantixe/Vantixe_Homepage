@@ -15,6 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       { url: `${DOMAINS.technology}/tprm`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
       { url: `${DOMAINS.technology}/sourcing-agent`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
       { url: `${DOMAINS.technology}/category-strategy`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+      { url: `${DOMAINS.technology}/security`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
     ]
   }
 

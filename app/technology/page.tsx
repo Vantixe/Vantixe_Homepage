@@ -6,7 +6,9 @@ import { IntegrationHub } from '@/components/technology/IntegrationHub'
 import { CustomAgents } from '@/components/technology/CustomAgents'
 import { TechCTA } from '@/components/technology/TechCTA'
 import { VideoSchema } from '@/components/layout/VideoSchema'
+import { CertificationStrip } from '@/components/ui/CertificationStrip'
 import { DOMAINS } from '@/lib/domains'
+import { SHOW_CERTIFICATION_STRIP } from '@/lib/security'
 
 export const metadata: Metadata = {
   title: 'Technology Platform',
@@ -60,6 +62,9 @@ export default function TechnologyPage() {
           <ProductShowcase />
           <IntegrationHub />
           <CustomAgents />
+          {SHOW_CERTIFICATION_STRIP && (
+            <CertificationStrip dark className="mb-20" />
+          )}
           <TechCTA showExplore={false} />
         </div>
       </section>

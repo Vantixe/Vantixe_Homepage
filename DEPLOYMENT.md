@@ -30,7 +30,11 @@ vantixe.ai   -->  Vercel  -->  Middleware rewrites to /technology/* pages
 The middleware (`middleware.ts`) does:
 - Detects `vantixe.ai` from the `Host` header
 - Rewrites `vantixe.ai/` to `/technology`
-- Rewrites `vantixe.ai/tprm` to `/technology/tprm` (same for other products)
+- Rewrites `vantixe.ai/tprm` to `/technology/tprm` (same for the other products and `/security`)
+
+**Adding a new page under `vantixe.ai`?** The rewrite list in `middleware.ts` is an explicit
+allowlist, not a wildcard. A new path must be added there or it will 404 on the `.ai` domain
+while working fine on `vantixe.com`.
 - Sets a `vantixe-domain` cookie so the Navbar knows which theme to show
 
 ## DNS Configuration
@@ -116,6 +120,7 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 | `/tprm` | `/technology/tprm` | TPRM product page (with demo carousel) |
 | `/sourcing-agent` | `/technology/sourcing-agent` | Sourcing Agent page (with demo carousel) |
 | `/category-strategy` | `/technology/category-strategy` | Category Strategy (coming soon) |
+| `/security` | `/technology/security` | ISO 27001 certification and security controls |
 
 ## Key Files
 

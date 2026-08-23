@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { CERTIFIED_COMPANY_PHRASE } from '@/lib/security'
 
 export function Footer() {
   const pathname = usePathname()
@@ -21,6 +22,17 @@ export function Footer() {
             <p className="text-white/60 text-sm">
               Procurement Excellence. Delivered.
             </p>
+
+            {/* Certification claim. Wording is fixed by the certification body's
+                conditions of use, see lib/security.ts before editing. */}
+            <div className="mt-6">
+              <Link
+                href="/technology/security"
+                className="text-sm text-white/70 hover:text-white transition-colors"
+              >
+                {CERTIFIED_COMPANY_PHRASE}
+              </Link>
+            </div>
           </div>
 
           {/* Quick Links */}

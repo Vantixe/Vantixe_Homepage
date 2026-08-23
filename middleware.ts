@@ -15,7 +15,8 @@ export function middleware(request: NextRequest) {
     } else if (
       pathname === '/tprm' ||
       pathname === '/sourcing-agent' ||
-      pathname === '/category-strategy'
+      pathname === '/category-strategy' ||
+      pathname === '/security'
     ) {
       response = NextResponse.rewrite(
         new URL(`/technology${pathname}`, request.url)
