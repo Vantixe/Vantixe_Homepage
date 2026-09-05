@@ -137,7 +137,7 @@ export const serviceFaqs: Record<string, FAQItem[]> = {
       question:
         'Do you build custom solutions or sell off-the-shelf software?',
       answer:
-        'Both. We have enterprise-grade products (TPRM platform and Sourcing Agent, both currently live) that are deployed and proven. In addition, through our Consulting+ model, we build custom tools during advisory engagements - when we identify a gap that can be solved with a focused digital solution. These are delivered as consulting deliverables that the client owns and operates independently.',
+        'Both. We have enterprise-grade products (TPRM, Autonomous Sourcing and Negotiation, and Category Strategy, all currently live) that are deployed and proven. In addition, through our Consulting+ model, we build custom tools during advisory engagements - when we identify a gap that can be solved with a focused digital solution. These are delivered as consulting deliverables that the client owns and operates independently.',
     },
     {
       question:
@@ -175,9 +175,9 @@ export const productFaqs: Record<string, FAQItem[]> = {
   ],
   'sourcing-agent': [
     {
-      question: 'What does the Sourcing Agent do?',
+      question: 'What does Autonomous Sourcing and Negotiation do?',
       answer:
-        'The Sourcing Agent runs the full procurement sourcing cycle. Buyers build an RFQ in a single-page builder, the agent distributes tokenized invitation links to selected suppliers, suppliers respond via a structured form or email reply, and the agent benchmarks every line item against historical and competitive data, drafts data-backed negotiation emails and queues them for approval. It can also run sourcing cycles on a schedule via recurring templates.',
+        'Autonomous Sourcing and Negotiation runs the full procurement sourcing cycle. Buyers build an RFQ in a single-page builder, the agents distribute tokenized invitation links to selected suppliers, suppliers respond via a structured form or email reply, and the agents benchmark every line item against historical and competitive data, drafts data-backed negotiation emails and queues them for approval. It can also run sourcing cycles on a schedule via recurring templates.',
     },
     {
       question:
@@ -186,18 +186,18 @@ export const productFaqs: Record<string, FAQItem[]> = {
         'No. Each invited supplier receives an email with an HMAC-signed response link valid until the RFQ deadline. Clicking the link opens a public form where the supplier enters per-line-item pricing, lead time and notes. Suppliers can also reply by email - the inbound pipeline extracts the quote from PDF, Excel or Word attachments. Both channels feed the same Quote pipeline, so the buyer sees a unified comparison view regardless of how each supplier responded.',
     },
     {
-      question: 'Does the agent send negotiation emails without human approval?',
+      question: 'Do the agents send negotiation emails without human approval?',
       answer:
         'By default, all outbound emails - whether RFQ invitations or negotiation responses - are queued for human review before sending. Organisations can configure approval rules based on their risk appetite, allowing auto-send for routine cases while requiring buyer sign-off on higher-value or more complex negotiations. Threshold gates can be tuned by dollar amount, extraction confidence, supplier familiarity and discount depth.',
     },
     {
       question:
-        'How does the agent determine whether a price is competitive?',
+        'How do the agents determine whether a price is competitive?',
       answer:
-        "The agent applies a 4-level price analysis - RFQ-level comparison across all responding suppliers, same-supplier price history, cross-supplier market data and part number matching. The result is a data-driven target price and negotiation rationale for every line item, grounded in your organisation's actual purchasing history. Every claim in the negotiation email references real data; a second AI proofread pass blocks any hallucinated reference before send.",
+        "The agents apply a 4-level price analysis: RFQ-level comparison across all responding suppliers, same-supplier price history, cross-supplier market data and part number matching. The result is a data-driven target price and negotiation rationale for every line item, grounded in your organisation's actual purchasing history. Every claim in the negotiation email references real data; a second AI proofread pass blocks any hallucinated reference before send.",
     },
     {
-      question: 'Can the agent run sourcing cycles on a schedule?',
+      question: 'Can the agents run sourcing cycles on a schedule?',
       answer:
         'Yes. Buyers can save any RFQ as a recurring sourcing template - linked items, linked suppliers, default closing window and frequency. On each cycle the scheduler creates a draft RFQ for review or auto-distributes it if the template is trusted. Useful for monthly recurring categories such as kitchen supplies, office consumables or scheduled MRO sourcing.',
     },

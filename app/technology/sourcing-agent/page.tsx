@@ -1,29 +1,32 @@
 import type { Metadata } from 'next'
 import { ProductPageLayout } from '@/components/technology/ProductPageLayout'
 import { ProductDemo } from '@/components/technology/ProductDemo'
+import { ProductVideo } from '@/components/technology/ProductVideo'
 import { FAQSchema } from '@/components/layout/FAQSchema'
+import { ProductVideoSchemas } from '@/components/layout/VideoSchema'
+import { DOMAINS } from '@/lib/domains'
+import { productVideos } from '@/lib/videos'
 import { FadeInView } from '@/components/animations/FadeInView'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { Card } from '@/components/ui/Card'
 import { products } from '@/lib/products'
 import { productFaqs } from '@/lib/faqs'
 
+const agent = products.find((p) => p.id === 'sourcing-agent')!
+const video = productVideos['sourcing-agent']
+
 export const metadata: Metadata = {
-  title: 'Sourcing Agent',
-  description:
-    'AI agent that runs your full sourcing cycle - build the RFQ, distribute to suppliers, collect responses (form or email), benchmark prices, draft and send negotiations, and recur on schedule.',
+  title: agent.name,
+  description: agent.metaDescription ?? agent.description,
   alternates: {
     canonical: 'https://vantixe.ai/sourcing-agent',
   },
   openGraph: {
-    title: 'Sourcing Agent',
-    description:
-      'AI agent that runs your full sourcing cycle - build the RFQ, distribute to suppliers, collect responses (form or email), benchmark prices, draft and send negotiations, and recur on schedule.',
+    title: agent.name,
+    description: agent.metaDescription ?? agent.description,
     url: 'https://vantixe.ai/sourcing-agent',
   },
 }
-
-const agent = products.find((p) => p.id === 'sourcing-agent')!
 
 const demoSlides = [
   {
@@ -48,7 +51,7 @@ const demoSlides = [
     image: '/images/demos/sourcing-agent/draft-email.png',
     label: 'AI-Composed',
     title: 'Data-Backed Negotiation, Ready to Send',
-    description: 'The agent drafts a professional negotiation email with target prices derived from a 4-level price analysis: RFQ-level comparison, same-supplier history, cross-supplier market data and part number matches. The internal strategy brief shows the buyer the full rationale and savings potential.',
+    description: 'The agents draft a professional negotiation email with target prices derived from a 4-level price analysis: RFQ-level comparison, same-supplier history, cross-supplier market data and part number matches. The internal strategy brief shows the buyer the full rationale and savings potential.',
   },
 ]
 
@@ -56,10 +59,18 @@ export default function SourcingAgentPage() {
   return (
     <>
     <FAQSchema faqs={productFaqs['sourcing-agent']} />
+    <ProductVideoSchemas origin={DOMAINS.technology} productIds={['sourcing-agent']} />
     <ProductPageLayout
       product={agent}
       ctaText="See It In Action"
-      demo={<ProductDemo slides={demoSlides} interval={6} className="mb-12" />}
+      demo={
+        <ProductVideo
+          src={video.src}
+          poster={video.poster}
+          label={video.name}
+          className="mb-12"
+        />
+      }
     >
       {/* Pipeline */}
       <section className="section-padding">
@@ -68,7 +79,7 @@ export default function SourcingAgentPage() {
             <SectionHeading
               label="How It Works"
               title="A 7-Step Sourcing Lifecycle"
-              subtitle="From building the RFQ to closing the cycle, the agent handles each step with full auditability - and runs again on schedule."
+              subtitle="From building the RFQ to closing the cycle, the agents handle each step with full auditability, and run again on schedule."
               dark
               centered
             />
@@ -96,6 +107,26 @@ export default function SourcingAgentPage() {
               </FadeInView>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Inside the platform */}
+      <section className="section-padding border-t border-white/5">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <FadeInView>
+            <SectionHeading
+              title="Inside the Platform"
+              subtitle="Screenshots from the platform: the sourcing dashboard, quotes grouped into sourcing events, line-item price comparison and the AI-drafted negotiation email."
+              dark
+              centered
+              className="mb-10"
+            />
+          </FadeInView>
+          <FadeInView>
+            <div className="max-w-[1000px] mx-auto">
+              <ProductDemo slides={demoSlides} interval={6} />
+            </div>
+          </FadeInView>
         </div>
       </section>
 
@@ -137,7 +168,7 @@ export default function SourcingAgentPage() {
             <SectionHeading
               label="Trust & Safety"
               title="You Stay in Control"
-              subtitle="The agent is powerful but never reckless. Every safeguard ensures you can trust the system to act on your behalf - or pause and review first."
+              subtitle="The agents are powerful but never reckless. Every safeguard ensures you can trust the platform to act on your behalf, or pause and review first."
               dark
               centered
             />

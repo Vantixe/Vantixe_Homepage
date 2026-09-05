@@ -117,9 +117,9 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 | vantixe.ai path | Internal path | Description |
 |-----------------|---------------|-------------|
 | `/` | `/technology` | Technology platform overview |
-| `/tprm` | `/technology/tprm` | TPRM product page (with demo carousel) |
-| `/sourcing-agent` | `/technology/sourcing-agent` | Sourcing Agent page (with demo carousel) |
-| `/category-strategy` | `/technology/category-strategy` | Category Strategy (coming soon) |
+| `/tprm` | `/technology/tprm` | TPRM product page (promo video + screenshot carousel) |
+| `/sourcing-agent` | `/technology/sourcing-agent` | Autonomous Sourcing and Negotiation page (promo video + screenshot carousel) |
+| `/category-strategy` | `/technology/category-strategy` | Category Strategy product page (screenshot carousel) |
 | `/security` | `/technology/security` | ISO 27001 certification and security controls |
 
 ## Key Files
@@ -128,10 +128,11 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 |------|---------|
 | `middleware.ts` | Domain detection, path rewrites, cookie setting |
 | `lib/domains.ts` | Domain URLs and helper functions |
-| `lib/products.ts` | Product data (TPRM, Sourcing Agent, Category Strategy) |
+| `lib/products.ts` | Product data (TPRM, Autonomous Sourcing, Category Strategy) |
 | `lib/services.ts` | All 7 service page content |
 | `components/layout/Navbar.tsx` | Theme-aware navbar with dropdowns |
 | `components/technology/ProductDemo.tsx` | Screenshot carousel for product pages |
+| `lib/videos.ts` | Product promo films: file paths and VideoObject metadata, one entry per product |
 | `app/globals.css` | Tailwind theme tokens (bright + dark palettes) |
 
 ## Important Notes

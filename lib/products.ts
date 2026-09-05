@@ -4,6 +4,8 @@ export interface Product {
   shortName: string
   tagline: string
   description: string
+  /** Search and share-preview description, about 155 characters. Falls back to description. */
+  metaDescription?: string
   status: 'live' | 'coming-soon'
   statusLabel: string
   href: string
@@ -37,11 +39,13 @@ export const products: Product[] = [
   },
   {
     id: 'sourcing-agent',
-    name: 'Sourcing Agent',
-    shortName: 'Sourcing Agent',
-    tagline: 'Autonomous sourcing - RFQ creation, supplier outreach, quote analysis and AI negotiation in one agent',
+    name: 'Autonomous Sourcing and Negotiation',
+    shortName: 'Autonomous Sourcing',
+    tagline: 'AI agents run the full sourcing cycle: RFQ creation, supplier outreach, quote analysis and negotiation',
     description:
-      'AI agent that runs your full sourcing cycle - build the RFQ, distribute to suppliers, collect responses (form or email), benchmark prices, draft and send negotiations, and recur on schedule.',
+      'AI agents run your full sourcing cycle: build the RFQ, distribute it to suppliers, collect responses by form or email, benchmark every price, draft and send negotiations, and repeat on schedule. You decide what sends automatically and what waits for a buyer.',
+    metaDescription:
+      'AI agents build the RFQ, collect supplier quotes, benchmark every price and draft the negotiation. You decide what sends automatically and what waits for a buyer.',
     status: 'live',
     statusLabel: 'Live',
     href: '/technology/sourcing-agent',

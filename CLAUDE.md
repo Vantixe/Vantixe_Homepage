@@ -18,7 +18,7 @@
 
 ## Key Directories
 - `app/` — Next.js App Router pages
-- `app/technology/` — Dark-themed tech pages (TPRM, Sourcing Agent, Category Strategy)
+- `app/technology/`: Dark-themed tech pages (TPRM, Autonomous Sourcing, Category Strategy)
 - `components/consulting/` — Bright theme consulting sections
 - `components/technology/` — Dark theme tech sections
 - `components/ui/` — Shared UI components

@@ -34,7 +34,7 @@ const consultingLinks: NavLink[] = [
 const techLinks: NavLink[] = [
   { label: 'Platform', href: '/technology' },
   { label: 'TPRM', href: '/technology/tprm' },
-  { label: 'Sourcing Agent', href: '/technology/sourcing-agent' },
+  { label: 'Autonomous Sourcing', href: '/technology/sourcing-agent' },
   { label: 'Category Strategy', href: '/technology/category-strategy' },
   { label: 'Security', href: '/technology/security' },
   { label: 'About', href: 'https://www.vantixe.com/about' },

@@ -3,8 +3,9 @@ import { ProductPageLayout } from '@/components/technology/ProductPageLayout'
 import { ProductDemo } from '@/components/technology/ProductDemo'
 import { ProductVideo } from '@/components/technology/ProductVideo'
 import { FAQSchema } from '@/components/layout/FAQSchema'
-import { VideoSchema } from '@/components/layout/VideoSchema'
+import { ProductVideoSchemas } from '@/components/layout/VideoSchema'
 import { DOMAINS } from '@/lib/domains'
+import { productVideos } from '@/lib/videos'
 import { FadeInView } from '@/components/animations/FadeInView'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 import { Card } from '@/components/ui/Card'
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
 }
 
 const tprm = products.find((p) => p.id === 'tprm')!
+const video = productVideos['tprm']
 
 const demoSlides = [
   {
@@ -77,22 +79,15 @@ export default function TPRMPage() {
   return (
     <>
     <FAQSchema faqs={productFaqs['tprm']} />
-    <VideoSchema
-      name="See TPRM in Action: Automated Third-Party Risk Management"
-      description="Automated supplier onboarding, sanctions and PEP screening, continuous monitoring and AI-powered due diligence with Vantixe TPRM."
-      contentUrl={`${DOMAINS.technology}/videos/tprm-promo.mp4`}
-      thumbnailUrl={`${DOMAINS.technology}/videos/tprm-promo-poster.jpg`}
-      uploadDate="2026-07-11"
-      duration="PT1M35S"
-    />
+    <ProductVideoSchemas origin={DOMAINS.technology} productIds={['tprm']} />
     <ProductPageLayout
       product={tprm}
       ctaText="See TPRM in Action"
       demo={
         <ProductVideo
-          src="/videos/tprm-promo.mp4"
-          poster="/videos/tprm-promo-poster.jpg"
-          label="See TPRM in action: automated third-party risk management"
+          src={video.src}
+          poster={video.poster}
+          label={video.name}
           className="mb-12"
         />
       }

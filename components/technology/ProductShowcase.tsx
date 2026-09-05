@@ -3,20 +3,12 @@
 import { StaggerChildren, StaggerItem } from '@/components/animations/StaggerChildren'
 import { ProductCard } from './ProductCard'
 import { products } from '@/lib/products'
+import { getProductVideo } from '@/lib/videos'
 
 const demoImages: Record<string, string> = {
   tprm: '/images/demos/tprm/dashboard.png',
   'sourcing-agent': '/images/demos/sourcing-agent/dashboard.png',
   'category-strategy': '/images/demos/category-strategy/portfolio.png',
-}
-
-// Products with a video get a silent moving preview in their card; the
-// screenshot stays as the fallback for products without one yet.
-const demoVideos: Record<string, { src: string; poster: string }> = {
-  tprm: {
-    src: '/videos/tprm-promo.mp4',
-    poster: '/videos/tprm-promo-poster.jpg',
-  },
 }
 
 export function ProductShowcase() {
@@ -27,7 +19,9 @@ export function ProductShowcase() {
           <ProductCard
             product={product}
             demoImage={demoImages[product.id]}
-            demoVideo={demoVideos[product.id]}
+            // Products with a film (lib/videos.ts) get a silent moving preview;
+            // the screenshot stays as the fallback for products without one yet.
+            demoVideo={getProductVideo(product.id)}
           />
         </StaggerItem>
       ))}

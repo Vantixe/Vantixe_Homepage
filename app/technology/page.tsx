@@ -5,7 +5,7 @@ import { ProductShowcase } from '@/components/technology/ProductShowcase'
 import { IntegrationHub } from '@/components/technology/IntegrationHub'
 import { CustomAgents } from '@/components/technology/CustomAgents'
 import { TechCTA } from '@/components/technology/TechCTA'
-import { VideoSchema } from '@/components/layout/VideoSchema'
+import { ProductVideoSchemas } from '@/components/layout/VideoSchema'
 import { CertificationStrip } from '@/components/ui/CertificationStrip'
 import { DOMAINS } from '@/lib/domains'
 import { SHOW_CERTIFICATION_STRIP } from '@/lib/security'
@@ -13,14 +13,14 @@ import { SHOW_CERTIFICATION_STRIP } from '@/lib/security'
 export const metadata: Metadata = {
   title: 'Technology Platform',
   description:
-    'AI-powered procurement technology by Vantixe. Enterprise-grade platforms for third-party risk management, quote negotiation, and category strategy.',
+    'AI-powered procurement technology by Vantixe. Enterprise-grade platforms for third-party risk management, autonomous sourcing and negotiation, and category strategy.',
   alternates: {
     canonical: 'https://vantixe.ai/',
   },
   openGraph: {
     title: 'Technology Platform',
     description:
-      'AI-powered procurement technology by Vantixe. Enterprise-grade platforms for third-party risk management, quote negotiation, and category strategy.',
+      'AI-powered procurement technology by Vantixe. Enterprise-grade platforms for third-party risk management, autonomous sourcing and negotiation, and category strategy.',
     url: 'https://vantixe.ai/',
   },
 }
@@ -28,14 +28,7 @@ export const metadata: Metadata = {
 export default function TechnologyPage() {
   return (
     <div className="pt-[72px]">
-      <VideoSchema
-        name="See TPRM in Action: Automated Third-Party Risk Management"
-        description="Automated supplier onboarding, sanctions and PEP screening, continuous monitoring and AI-powered due diligence with Vantixe TPRM."
-        contentUrl={`${DOMAINS.technology}/videos/tprm-promo.mp4`}
-        thumbnailUrl={`${DOMAINS.technology}/videos/tprm-promo-poster.jpg`}
-        uploadDate="2026-07-11"
-        duration="PT1M35S"
-      />
+      <ProductVideoSchemas origin={DOMAINS.technology} />
       {/* Hero */}
       <section className="section-padding relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(10,138,173,0.1)_0%,transparent_60%)] pointer-events-none" />

@@ -6,7 +6,7 @@ const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
  * Google Tag Manager loader.
  *
  * Renders nothing unless NEXT_PUBLIC_GTM_ID is set, so this is safe to ship
- * before the GTM container exists — the site behaves exactly as before until
+ * before the GTM container exists: the site behaves exactly as before until
  * the env var is filled in.
  *
  * One install here covers BOTH vantixe.com and vantixe.ai, because they are

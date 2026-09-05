@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     'AI procurement',
     'TPRM',
     'sourcing agent',
+    'autonomous sourcing',
     'Hong Kong',
   ],
   authors: [{ name: 'Vantixe Advisory Limited' }],

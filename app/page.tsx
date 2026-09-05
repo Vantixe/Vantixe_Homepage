@@ -10,20 +10,13 @@ import { ProductShowcase } from '@/components/technology/ProductShowcase'
 import { IntegrationHub } from '@/components/technology/IntegrationHub'
 import { CustomAgents } from '@/components/technology/CustomAgents'
 import { TechCTA } from '@/components/technology/TechCTA'
-import { VideoSchema } from '@/components/layout/VideoSchema'
+import { ProductVideoSchemas } from '@/components/layout/VideoSchema'
 import { DOMAINS } from '@/lib/domains'
 
 export default function HomePage() {
   return (
     <>
-      <VideoSchema
-        name="See TPRM in Action: Automated Third-Party Risk Management"
-        description="Automated supplier onboarding, sanctions and PEP screening, continuous monitoring and AI-powered due diligence with Vantixe TPRM."
-        contentUrl={`${DOMAINS.consulting}/videos/tprm-promo.mp4`}
-        thumbnailUrl={`${DOMAINS.consulting}/videos/tprm-promo-poster.jpg`}
-        uploadDate="2026-07-11"
-        duration="PT1M35S"
-      />
+      <ProductVideoSchemas origin={DOMAINS.consulting} />
 
       {/* ===== CONSULTING SECTIONS (Bright Theme) ===== */}
       <Hero />

@@ -8,7 +8,7 @@ type Intent = 'quote' | 'callback' | 'demo' | 'general' | 'press'
 const INTENT_OPTIONS: { value: Intent; label: string; description: string }[] = [
   { value: 'quote', label: 'Get a quote or proposal', description: 'Scope a piece of work and receive a written proposal.' },
   { value: 'callback', label: 'Request a callback', description: 'Tell us when to call and we’ll fit your schedule.' },
-  { value: 'demo', label: 'Book a product demo', description: 'See TPRM, Sourcing Agent or Category Strategy in action.' },
+  { value: 'demo', label: 'Book a product demo', description: 'See TPRM, Autonomous Sourcing or Category Strategy in action.' },
   { value: 'general', label: 'General inquiry', description: 'Anything else: questions, partnerships, ideas.' },
   { value: 'press', label: 'Speaking or press', description: 'Media, conferences, interviews.' },
 ]
@@ -16,7 +16,7 @@ const INTENT_OPTIONS: { value: Intent; label: string; description: string }[] = 
 const PRODUCT_OPTIONS = [
   { value: '', label: 'Select a product' },
   { value: 'tprm', label: 'TPRM: Third-Party Risk Management' },
-  { value: 'sourcing-agent', label: 'Sourcing Agent: Quote Negotiation' },
+  { value: 'sourcing-agent', label: 'Autonomous Sourcing and Negotiation' },
   { value: 'category-strategy', label: 'Category Strategy: Guided Strategy Platform' },
   { value: 'all', label: 'The full platform' },
 ]
