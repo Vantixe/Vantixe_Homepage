@@ -13,14 +13,14 @@ const CONTACT_EMAIL = 'hello@vantixe.com'
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description:
-    'How Vantixe Advisory Limited collects, uses and protects personal data on vantixe.com and vantixe.ai and in our advisory work.',
+    'How Vantixe Advisory Limited collects, uses and protects personal data on vantixe.com and vantixe.ai.',
   alternates: {
     canonical: 'https://www.vantixe.com/privacy',
   },
   openGraph: {
     title: 'Privacy Policy',
     description:
-      'How Vantixe Advisory Limited collects, uses and protects personal data on vantixe.com and vantixe.ai and in our advisory work.',
+      'How Vantixe Advisory Limited collects, uses and protects personal data on vantixe.com and vantixe.ai.',
     url: 'https://www.vantixe.com/privacy',
   },
 }
@@ -55,9 +55,9 @@ export default function PrivacyPage() {
           <p className="mb-4">
             Vantixe Advisory Limited is a procurement advisory and software company in Hong Kong,
             at Unit 1603, The L. Plaza, 367-375 Queen&apos;s Road Central, Sheung Wan. This policy
-            covers our websites vantixe.com and vantixe.ai, the enquiries and meetings that come
-            from them, and the personal data we handle in our advisory engagements. Our software
-            products are covered by the agreement each client signs with us.
+            covers our websites vantixe.com and vantixe.ai and the enquiries and meetings that
+            come from them. Personal data we handle for a client, in advisory engagements or in
+            our software products, is governed by the agreement that client signs with us.
           </p>
           <p className="mb-10">
             For anything about your personal data, email <Email />.
@@ -70,11 +70,6 @@ export default function PrivacyPage() {
             preferred time to call. When you book a meeting, Microsoft Bookings collects the
             details you enter and stores them in our calendar. When you email us, we keep the
             email.
-          </p>
-          <p className="mb-4">
-            In advisory engagements we receive business contact details of client staff and
-            suppliers, and whatever personal data is contained in the documents a client shares
-            with us for the work. We use it only for that engagement.
           </p>
           <p className="mb-10">
             Our hosting provider records standard server logs for every visit: IP address,
@@ -111,7 +106,6 @@ export default function PrivacyPage() {
           <h2 className="text-2xl font-bold text-text-primary mb-4">How we use your information</h2>
           <ul className="list-disc pl-6 mb-10 space-y-2">
             <li>To answer your message, prepare a proposal or set up a demo you asked for.</li>
-            <li>To deliver the advisory work a client has engaged us for.</li>
             <li>To send you our insights on procurement and AI, only if you asked for them. Every email has an unsubscribe link.</li>
             <li>To keep the sites running securely and to stop spam.</li>
             <li>To measure whether our advertising works.</li>
@@ -122,17 +116,14 @@ export default function PrivacyPage() {
           <p className="mb-10">
             We do not sell personal data. We share it only with the service providers that run
             our websites, email and calendar, and with the advertising platforms for the
-            measurement described above. They process data in the United States, the European
-            Union and Microsoft&apos;s region for our tenant. We disclose data to authorities only
-            when the law requires it.
+            measurement described above. Some of these providers are outside Hong Kong. We disclose
+            data to authorities only when the law requires it.
           </p>
 
           <h2 className="text-2xl font-bold text-text-primary mb-4">How long we keep it</h2>
           <p className="mb-10">
             Messages and booking details stay in our mailbox and calendar for as long as we need
-            them to handle your enquiry and to keep our business records. Engagement data is
-            kept for the term of the engagement and the retention period we agree with the
-            client, then deleted or returned. Server logs are kept by our hosting provider for a
+            them to handle your enquiry and to keep our business records. Server logs are kept by our hosting provider for a
             short period for security.
           </p>
 
