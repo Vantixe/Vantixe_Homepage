@@ -119,17 +119,12 @@ export default function PrivacyPage() {
           </ul>
 
           <h2 className="text-2xl font-bold text-text-primary mb-4">Who we share it with</h2>
-          <p className="mb-4">
-            We do not sell personal data. We share it only with the service providers that run
-            our sites and office tools: Vercel hosts the websites, Cloudflare checks that form
-            submissions come from a person, Resend delivers form messages to our mailbox,
-            Microsoft 365 holds our email and calendar, and LinkedIn and Google run the
-            advertising measurement above. Each is bound by its own privacy terms and by our
-            agreement with it. We disclose data to authorities only when the law requires it.
-          </p>
           <p className="mb-10">
-            These providers process data in the United States and the European Union, and
-            Microsoft in the region assigned to our tenant.
+            We do not sell personal data. We share it only with the service providers that run
+            our websites, email and calendar, and with the advertising platforms for the
+            measurement described above. They process data in the United States, the European
+            Union and Microsoft&apos;s region for our tenant. We disclose data to authorities only
+            when the law requires it.
           </p>
 
           <h2 className="text-2xl font-bold text-text-primary mb-4">How long we keep it</h2>
