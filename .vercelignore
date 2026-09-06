@@ -1,0 +1,9 @@
+.git
+node_modules
+.next
+.next-tagged
+.claude
+.env*.local
+*.log
+*.pdf
+Screenshot*.png
