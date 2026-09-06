@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Button } from '@/components/ui/Button'
+import { BOOK_PATH } from '@/lib/booking'
 
 export const metadata: Metadata = {
   title: 'About',
@@ -16,9 +17,6 @@ export const metadata: Metadata = {
     url: 'https://www.vantixe.com/about',
   },
 }
-
-const BOOKING_URL =
-  'https://outlook.office.com/book/MeetingsWithMichael@vantixe.com/?ismsaljsauthenabled'
 
 export default function AboutPage() {
   return (
@@ -96,7 +94,7 @@ export default function AboutPage() {
           <p className="text-white/80 mb-8">
             Ready to see what senior-led procurement consulting can achieve?
           </p>
-          <Button variant="primary" size="lg" href={BOOKING_URL} external>
+          <Button variant="primary" size="lg" href={BOOK_PATH} external>
             Schedule a Meeting
           </Button>
         </div>

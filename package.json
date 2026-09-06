@@ -6,7 +6,12 @@
     "dev": "next dev -p 4000",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prebuild": "node scripts/check-invariants.mjs",
+    "check": "node scripts/check-invariants.mjs",
+    "verify:tracking": "node scripts/verify-tracking.mjs",
+    "serve:tagged": "node scripts/serve-tagged.mjs",
+    "verify:tracking:tagged": "node scripts/verify-tracking.mjs --tagged"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",
@@ -22,6 +27,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
+    "playwright-core": "^1.59.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

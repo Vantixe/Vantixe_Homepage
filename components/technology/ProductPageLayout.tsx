@@ -8,9 +8,7 @@ import { StatusBadge } from '@/components/ui/StatusBadge'
 import { Button } from '@/components/ui/Button'
 import { CERTIFIED_COMPANY_PHRASE } from '@/lib/security'
 import type { Product } from '@/lib/products'
-
-const BOOKING_URL =
-  'https://outlook.office.com/book/MeetingsWithMichael@vantixe.com/?ismsaljsauthenabled'
+import { BOOK_PATH } from '@/lib/booking'
 
 interface ProductPageLayoutProps {
   product: Product
@@ -105,7 +103,7 @@ export function ProductPageLayout({
               See&nbsp;{product.shortName}&nbsp;in action with your own data. We&apos;ll set up a pilot in days, not months.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button href={BOOKING_URL} external variant="primary" size="lg">
+              <Button href={BOOK_PATH} external variant="primary" size="lg">
                 Book a Meeting
               </Button>
               <Button href={`/contact?topic=demo&product=${product.id}#form`} variant="outline" size="lg">

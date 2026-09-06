@@ -32,9 +32,10 @@ The middleware (`middleware.ts`) does:
 - Rewrites `vantixe.ai/` to `/technology`
 - Rewrites `vantixe.ai/tprm` to `/technology/tprm` (same for the other products and `/security`)
 
-**Adding a new page under `vantixe.ai`?** The rewrite list in `middleware.ts` is an explicit
-allowlist, not a wildcard. A new path must be added there or it will 404 on the `.ai` domain
-while working fine on `vantixe.com`.
+**Adding a new page under `vantixe.ai`?** Paths not in the rewrite list fall through to
+`NextResponse.next()`, so any route in `app/` is also served on the `.ai` domain at the same
+path (`vantixe.ai/contact`, `vantixe.ai/thank-you`, `vantixe.ai/book`, `vantixe.ai/privacy`
+all work). The rewrite list only maps the `.ai` root paths onto `/technology/*`.
 - Sets a `vantixe-domain` cookie so the Navbar knows which theme to show
 
 ## DNS Configuration
@@ -110,6 +111,9 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 | `/services/capability-building` | Capability Building detail |
 | `/services/ai-enabled-solutions` | AI-Enabled Solutions detail |
 | `/contact` | Contact info, booking link |
+| `/thank-you` | Landing page after a contact form submission (noindex). Carries `?topic=&product=` for ad reporting |
+| `/book` | Interstitial for every "book a meeting" button: records the click, then redirects to Microsoft Bookings (noindex) |
+| `/privacy` | Privacy policy: what the sites collect, the third parties, cookies and opt-outs |
 | `/insights` | Placeholder (noindex) |
 
 ### Technology (vantixe.ai)
@@ -121,6 +125,7 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 | `/sourcing-agent` | `/technology/sourcing-agent` | Autonomous Sourcing and Negotiation page (promo video + screenshot carousel) |
 | `/category-strategy` | `/technology/category-strategy` | Category Strategy product page (screenshot carousel) |
 | `/security` | `/technology/security` | ISO 27001 certification and security controls |
+| `/contact`, `/thank-you`, `/book`, `/privacy` | same paths | Served unchanged on vantixe.ai (middleware passthrough) |
 
 ## Key Files
 
@@ -133,7 +138,53 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 | `components/layout/Navbar.tsx` | Theme-aware navbar with dropdowns |
 | `components/technology/ProductDemo.tsx` | Screenshot carousel for product pages |
 | `lib/videos.ts` | Product promo films: file paths and VideoObject metadata, one entry per product |
+| `lib/booking.ts` | The Microsoft Bookings URL (only `/book` uses it) and `BOOK_PATH` for every booking button |
+| `components/contact/ContactForm.tsx` | Lead form: on success pushes `contact_form_submit` to GTM, then redirects to `/thank-you` |
+| `scripts/check-invariants.mjs` | Runs before every build: one booking URL, one tag loader each, no em dashes |
+| `scripts/verify-tracking.mjs` | Browser check of the redirect and /book behaviour against the dev server (plain and tagged runs) |
+| `scripts/serve-tagged.mjs` | Production build + server on 4001 with fake tracking ids for the tagged run |
+| `vercel.json` | Pins the build command to `npm run build` so the invariant check runs on Vercel too |
 | `app/globals.css` | Tailwind theme tokens (bright + dark palettes) |
+
+## Environment Variables (Vercel Production)
+
+| Variable | Purpose |
+|----------|---------|
+| `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_TO_EMAIL` | Contact form email delivery |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile bot check on the form |
+| `NEXT_PUBLIC_GTM_ID` | Google Tag Manager (Google Ads conversion tracking). Production only |
+| `NEXT_PUBLIC_LINKEDIN_PARTNER_ID` | LinkedIn Insight Tag. Production only, never set locally |
+| `NEXT_PUBLIC_LINKEDIN_BOOKING_CONVERSION_ID` | Optional event-specific LinkedIn conversion fired on `/book` |
+
+`NEXT_PUBLIC_*` values are inlined at build time: set them in Vercel before deploying.
+
+## Conversion Tracking
+
+Both ad platforms count leads by page load, so the contact form performs a real navigation to
+`/thank-you?topic=<intent>&product=<product>` after a successful send, and every booking button
+goes through `/book` before Microsoft Bookings. The form is reachable on both domains, so the
+rules must match by path, not by full URL:
+
+| Platform | Rule |
+|----------|------|
+| LinkedIn Campaign Manager | Page load, **URL contains** `/thank-you` (message sent) |
+| LinkedIn Campaign Manager | Page load, **URL contains** `/book` (booking started) |
+| Google Tag Manager | Existing trigger on the `contact_form_submit` dataLayer event (carries `intent`, `product`) |
+
+This machine blocks LinkedIn's ad domains at DNS level, so LinkedIn checks must be done from a
+phone on mobile data or in Campaign Manager.
+
+## Pre-Deploy Checklist
+
+1. `npm run check` (also runs automatically before every build).
+2. `npm run dev` in one terminal, `npm run verify:tracking` in another: FAIL 0. Cases that
+   need production-only tags report SKIP here.
+3. `npm run serve:tagged` (production build with fake tracking ids served on port 4001; every
+   Google and LinkedIn request is blocked by the script) and `npm run verify:tracking:tagged`:
+   strict, SKIP counts as failure.
+4. Owner walkthrough in the browser on localhost:4000.
+5. `git status` shows only what is meant to ship: `npx vercel --prod` deploys the working
+   directory, not git HEAD.
 
 ## Important Notes
 

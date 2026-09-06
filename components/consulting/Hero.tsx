@@ -1,7 +1,5 @@
 import { Button } from '@/components/ui/Button'
-
-const BOOKING_URL =
-  'https://outlook.office.com/book/MeetingsWithMichael@vantixe.com/?ismsaljsauthenabled'
+import { BOOK_PATH } from '@/lib/booking'
 
 export function Hero() {
   return (
@@ -26,7 +24,7 @@ export function Hero() {
           fair price.
         </p>
         <div className="flex flex-wrap gap-4">
-          <Button variant="primary" size="lg" href={BOOKING_URL} external>
+          <Button variant="primary" size="lg" href={BOOK_PATH} external>
             Let&apos;s Talk - Schedule Now
           </Button>
           <Button variant="white" size="lg" href="#about">

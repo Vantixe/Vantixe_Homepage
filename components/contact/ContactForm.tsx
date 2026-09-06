@@ -23,6 +23,16 @@ const PRODUCT_OPTIONS = [
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
+const INTENT_VALUES: string[] = INTENT_OPTIONS.map((o) => o.value)
+const PRODUCT_VALUES: string[] = PRODUCT_OPTIONS.map((o) => o.value).filter(Boolean)
+
+/** Real page load after a successful submission, so ad platforms can count it by URL. */
+const THANK_YOU_PATH = '/thank-you'
+/** How long to let Google Tag Manager finish its tags before we navigate away. */
+const GTM_EVENT_TIMEOUT_MS = 1500
+/** If the browser never left (navigation blocked), show the inline confirmation instead. */
+const SUCCESS_FALLBACK_MS = 4000
+
 declare global {
   interface Window {
     turnstile?: {
@@ -37,13 +47,35 @@ declare global {
 
 interface ContactFormProps {
   turnstileSiteKey?: string
+  /**
+   * True when Google Tag Manager is loaded on the page (NEXT_PUBLIC_GTM_ID set).
+   * Then the redirect waits for GTM's eventCallback so the Google Ads conversion
+   * request is not cut off. When false there is nothing to wait for.
+   */
+  gtmConfigured?: boolean
 }
 
-export function ContactForm({ turnstileSiteKey }: ContactFormProps) {
+export function ContactForm({ turnstileSiteKey, gtmConfigured = false }: ContactFormProps) {
   const searchParams = useSearchParams()
   const turnstileRef = useRef<HTMLDivElement>(null)
   const widgetIdRef = useRef<string | null>(null)
   const [turnstileToken, setTurnstileToken] = useState<string>('')
+
+  // Redirect bookkeeping. Refs, not state: the GTM callback and the fallback
+  // timer both close over these, and exactly one of them may navigate.
+  const navigatedRef = useRef(false)
+  const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const successTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const leaveListenerRef = useRef<((event: MouseEvent) => void) | null>(null)
+
+  function clearPendingRedirect() {
+    if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current)
+    if (successTimerRef.current) clearTimeout(successTimerRef.current)
+    redirectTimerRef.current = null
+    successTimerRef.current = null
+    if (leaveListenerRef.current) document.removeEventListener('click', leaveListenerRef.current, true)
+    leaveListenerRef.current = null
+  }
 
   const [intent, setIntent] = useState<Intent>('general')
   const [product, setProduct] = useState<string>('')
@@ -104,6 +136,31 @@ export function ContactForm({ turnstileSiteKey }: ContactFormProps) {
     }
   }, [turnstileSiteKey])
 
+  // Back from /thank-you can restore this page from the back-forward cache with
+  // the button still disabled. Reset so a second message can be sent.
+  useEffect(() => {
+    function onPageShow(event: PageTransitionEvent) {
+      if (event.persisted) {
+        // Timers armed before the redirect are frozen with the page and would
+        // resume here: the success card would replace the restored form, or a
+        // pending redirect timer would send the visitor forward again.
+        clearPendingRedirect()
+        navigatedRef.current = false
+        setStatus('idle')
+        // A Turnstile token is single-use and the one in memory was spent on the
+        // send that just succeeded. Ask the widget for a fresh one.
+        setTurnstileToken('')
+        if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current)
+      }
+    }
+    window.addEventListener('pageshow', onPageShow)
+    return () => {
+      window.removeEventListener('pageshow', onPageShow)
+      // Leaving the page another way (a navbar link) must not fire a stale redirect.
+      clearPendingRedirect()
+    }
+  }, [])
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setStatus('submitting')
@@ -137,27 +194,61 @@ export function ContactForm({ turnstileSiteKey }: ContactFormProps) {
         const body = await res.json().catch(() => ({}))
         throw new Error(body.error || 'Submission failed. Please try again.')
       }
-      setStatus('success')
-
-      // Notify Google Tag Manager of a successful lead submission so it can
-      // record a Google Ads conversion. Carries the intent + product the user
-      // selected, so conversions can be valued differently per product later.
-      // Safe no-op if GTM isn't loaded (dataLayer just goes unread).
-      if (typeof window !== 'undefined') {
-        window.dataLayer = window.dataLayer || []
-        window.dataLayer.push({
-          event: 'contact_form_submit',
-          intent: payload.intent,
-          product: payload.product,
-        })
+      // Honeypot filled: the API answered 200 on purpose so the bot believes it
+      // succeeded. Mirror that here. No tracking event, no redirect.
+      if (typeof payload.website === 'string' && payload.website.trim() !== '') {
+        setStatus('success')
+        return
       }
 
-      form.reset()
-      setProduct('')
-      if (widgetIdRef.current && window.turnstile) {
-        window.turnstile.reset(widgetIdRef.current)
-        setTurnstileToken('')
+      // Land on a real page so LinkedIn (URL rule: contains /thank-you) can count
+      // the lead. Carry what the visitor actually submitted, validated against
+      // the option lists, so reporting can separate demo requests by product.
+      const params = new URLSearchParams()
+      const intentValue = String(payload.intent ?? '')
+      const productValue = String(payload.product ?? '')
+      if (INTENT_VALUES.includes(intentValue)) params.set('topic', intentValue)
+      if (PRODUCT_VALUES.includes(productValue)) params.set('product', productValue)
+      const query = params.toString()
+      const target = query ? `${THANK_YOU_PATH}?${query}` : THANK_YOU_PATH
+
+      const go = () => {
+        if (navigatedRef.current) return
+        navigatedRef.current = true
+        clearPendingRedirect()
+        window.location.assign(target)
       }
+
+      // The visitor can still click a link during the short GTM wait. That is
+      // a choice to leave: drop the pending redirect at once, rather than let
+      // the timer fire while the new page is still loading and yank them to
+      // /thank-you. Plain left clicks only; a new-tab click keeps them here.
+      const onLeaveClick = (event: MouseEvent) => {
+        const link = event.target instanceof Element ? event.target.closest('a[href]') : null
+        if (!link) return
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+        if ((link as HTMLAnchorElement).target === '_blank') return
+        navigatedRef.current = true
+        clearPendingRedirect()
+      }
+      leaveListenerRef.current = onLeaveClick
+      document.addEventListener('click', onLeaveClick, true)
+
+      // Tell Google Tag Manager about the lead (Google Ads conversion). With GTM
+      // on the page, navigate from its eventCallback so the conversion request
+      // completes; the timer is the fallback if GTM never calls back.
+      window.dataLayer = window.dataLayer || []
+      window.dataLayer.push({
+        event: 'contact_form_submit',
+        intent: payload.intent,
+        product: payload.product,
+        ...(gtmConfigured ? { eventCallback: go, eventTimeout: GTM_EVENT_TIMEOUT_MS } : {}),
+      })
+      redirectTimerRef.current = setTimeout(go, gtmConfigured ? GTM_EVENT_TIMEOUT_MS : 0)
+
+      // If the browser is still here after this long, the navigation was blocked.
+      // Show the confirmation so the visitor knows the message went through.
+      successTimerRef.current = setTimeout(() => setStatus('success'), SUCCESS_FALLBACK_MS)
     } catch (err) {
       setStatus('error')
       setErrorMessage(err instanceof Error ? err.message : 'Submission failed. Please try again.')

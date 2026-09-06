@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
   const email = String(payload.email || '').trim()
   const message = String(payload.message || '').trim()
 
-  if (!intent || !INTENT_LABELS[intent]) {
+  if (!intent || !Object.hasOwn(INTENT_LABELS, intent)) {
     return NextResponse.json({ error: 'Please choose what we can help with.' }, { status: 400 })
   }
   if (!name || !company || !email || !message) {
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
   if (intent === 'callback' && !(payload.phone && String(payload.phone).trim())) {
     return NextResponse.json({ error: 'Phone number is required for a callback.' }, { status: 400 })
   }
-  if (intent === 'demo' && !(payload.product && PRODUCT_LABELS[String(payload.product)])) {
+  if (intent === 'demo' && !(payload.product && Object.hasOwn(PRODUCT_LABELS, String(payload.product)))) {
     return NextResponse.json({ error: 'Please choose which product you’d like to see.' }, { status: 400 })
   }
 
@@ -125,7 +125,10 @@ export async function POST(req: NextRequest) {
   const to = process.env.CONTACT_TO_EMAIL || 'hello@vantixe.com'
 
   const intentLabel = INTENT_LABELS[intent]
-  const productLabel = payload.product ? PRODUCT_LABELS[String(payload.product)] : null
+  const productLabel =
+    payload.product && Object.hasOwn(PRODUCT_LABELS, String(payload.product))
+      ? PRODUCT_LABELS[String(payload.product)]
+      : null
   const subjectBits = [intentLabel, company].filter(Boolean).join(' / ')
 
   const rows: [string, string | null | undefined][] = [

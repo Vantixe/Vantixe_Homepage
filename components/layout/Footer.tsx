@@ -71,6 +71,12 @@ export function Footer() {
               >
                 Contact
               </Link>
+              <Link
+                href="/privacy"
+                className="text-sm text-white/70 hover:text-white transition-colors"
+              >
+                Privacy
+              </Link>
             </div>
           </div>
 

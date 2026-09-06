@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // scripts/serve-tagged.mjs builds and serves a tagged copy (port 4001) from
+  // its own directory so the normal build and dev server are untouched. Unset
+  // everywhere else, so builds and the normal dev server use .next as before.
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   async redirects() {
     return [
       {

@@ -1,7 +1,5 @@
 import { Button } from '@/components/ui/Button'
-
-const BOOKING_URL =
-  'https://outlook.office.com/book/MeetingsWithMichael@vantixe.com/?ismsaljsauthenabled'
+import { BOOK_PATH } from '@/lib/booking'
 
 export function ConsultingCTA() {
   return (
@@ -16,7 +14,7 @@ export function ConsultingCTA() {
           come back within one business day.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Button variant="primary" size="lg" href={BOOKING_URL} external>
+          <Button variant="primary" size="lg" href={BOOK_PATH} external>
             Book a Meeting
           </Button>
           <Button variant="white" size="lg" href="/contact?topic=quote#form">

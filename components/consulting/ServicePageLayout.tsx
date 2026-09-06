@@ -1,9 +1,7 @@
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import type { ServicePageData } from '@/lib/services'
-
-const BOOKING_URL =
-  'https://outlook.office.com/book/MeetingsWithMichael@vantixe.com/?ismsaljsauthenabled'
+import { BOOK_PATH } from '@/lib/booking'
 
 export function ServicePageLayout({ data }: { data: ServicePageData }) {
   return (
@@ -19,7 +17,7 @@ export function ServicePageLayout({ data }: { data: ServicePageData }) {
             {data.intro}
           </p>
           <div className="flex flex-wrap gap-4">
-            <Button variant="primary" size="lg" href={BOOKING_URL} external>
+            <Button variant="primary" size="lg" href={BOOK_PATH} external>
               {data.ctaButton}
             </Button>
             <Button variant="white" size="lg" href="/services">
@@ -174,7 +172,7 @@ export function ServicePageLayout({ data }: { data: ServicePageData }) {
           <p className="text-white/80 mb-8">
             Let&apos;s discuss how we can help transform your procurement function.
           </p>
-          <Button variant="primary" size="lg" href={BOOKING_URL} external>
+          <Button variant="primary" size="lg" href={BOOK_PATH} external>
             Book a Meeting
           </Button>
         </div>

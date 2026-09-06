@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
+import { BOOK_PATH } from '@/lib/booking'
 
 export const metadata: Metadata = {
   title: 'Services',
@@ -16,9 +17,6 @@ export const metadata: Metadata = {
     url: 'https://www.vantixe.com/services',
   },
 }
-
-const BOOKING_URL =
-  'https://outlook.office.com/book/MeetingsWithMichael@vantixe.com/?ismsaljsauthenabled'
 
 const services = [
   {
@@ -114,7 +112,7 @@ export default function ServicesPage() {
           </div>
 
           <div className="text-center mt-16">
-            <Button variant="primary" size="lg" href={BOOKING_URL} external>
+            <Button variant="primary" size="lg" href={BOOK_PATH} external>
               Discuss Your Needs
             </Button>
           </div>

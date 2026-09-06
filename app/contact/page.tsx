@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Button } from '@/components/ui/Button'
 import { ContactForm } from '@/components/contact/ContactForm'
+import { BOOK_PATH } from '@/lib/booking'
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -17,9 +18,6 @@ export const metadata: Metadata = {
     url: 'https://www.vantixe.com/contact',
   },
 }
-
-const BOOKING_URL =
-  'https://outlook.office.com/book/MeetingsWithMichael@vantixe.com/?ismsaljsauthenabled'
 
 export default function ContactPage() {
   return (
@@ -47,7 +45,7 @@ export default function ContactPage() {
               <p className="text-sm text-text-muted mb-4">
                 Book a time directly with Michael Seitz
               </p>
-              <Button href={BOOKING_URL} external size="sm">
+              <Button href={BOOK_PATH} external size="sm">
                 Book Now
               </Button>
             </div>
@@ -102,7 +100,10 @@ export default function ContactPage() {
       <section id="form" className="pb-24 scroll-mt-24">
         <div className="max-w-[820px] mx-auto px-6">
           <Suspense fallback={<div className="h-[400px]" />}>
-            <ContactForm turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} />
+            <ContactForm
+              turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+              gtmConfigured={Boolean(process.env.NEXT_PUBLIC_GTM_ID)}
+            />
           </Suspense>
           <p className="text-center text-xs text-text-muted/70 mt-6">
             We respond within one business day. Please don&apos;t send confidential information via this form.
