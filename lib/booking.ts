@@ -9,4 +9,4 @@
 export const BOOK_PATH = '/book'
 
 export const BOOKING_URL =
-  'https://outlook.office.com/book/MeetingsWithMichael@vantixe.com/?ismsaljsauthenabled'
+  'https://outlook.office.com/bookwithme/user/184e1354d8d240b697a8d06658814a03@vantixe.com?anonymous&ismsaljsauthenabled&ep=plink'
