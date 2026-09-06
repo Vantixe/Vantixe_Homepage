@@ -47,9 +47,19 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
 
-  // Read domain from cookie (set by middleware) - available on first render, no flash
+  // Read domain from cookie (set by middleware) - available on first render, no flash.
+  // Take the FIRST entry named vantixe-domain and test its value, rather than
+  // asking whether any entry equals "vantixe-domain=ai". Two different siblings
+  // on *.vantixe.com can otherwise flip the theme: one whose cookie VALUE
+  // contains the string, and one that sets a genuine domain-wide
+  // vantixe-domain=ai alongside our own host-only cookie. Browsers order the
+  // more specific cookie first, so reading the first match resolves both.
   const isOnAiDomain = typeof document !== 'undefined'
-    ? document.cookie.includes('vantixe-domain=ai')
+    ? document.cookie
+        .split(';')
+        .map((c) => c.trim())
+        .find((c) => c.startsWith('vantixe-domain='))
+        ?.slice('vantixe-domain='.length) === 'ai'
     : false
 
   // On vantixe.ai the pathname won't have /technology prefix (middleware rewrites it)

@@ -2,6 +2,9 @@
   "name": "vantixe-homepage",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "next dev -p 4000",
     "build": "next build",
@@ -9,7 +12,9 @@
     "lint": "eslint",
     "prebuild": "node scripts/check-invariants.mjs",
     "check": "node scripts/check-invariants.mjs",
+    "check:selftest": "node scripts/check-invariants.selftest.mjs",
     "verify:tracking": "node scripts/verify-tracking.mjs",
+    "verify:deploy": "node scripts/verify-deployment.mjs",
     "serve:tagged": "node scripts/serve-tagged.mjs",
     "verify:tracking:tagged": "node scripts/verify-tracking.mjs --tagged"
   },

@@ -6,6 +6,7 @@ node_modules/
 # Next.js
 .next/
 .next-tagged/
+.next-*/
 out/
 
 # Production
@@ -47,6 +48,7 @@ Homepage_Enhancement_Ideas.txt
 CREDENTIALS_CAROUSEL_PROJECT.md
 
 # Reference files (keep local only)
+*.pdf
 Boutique consultancy firms give the Big Four a run for their money.pdf
 Vantixe_Colour_palette.png
 Vantixe Logo_BOLD Slogan-v2_Master Indigo.svg

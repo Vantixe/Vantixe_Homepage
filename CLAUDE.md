@@ -5,8 +5,8 @@
 - **Start**: `npm run dev` (runs on http://localhost:4000)
 
 ## Stack
-- Next.js 15 (App Router) + Tailwind CSS 4 + TypeScript + Framer Motion
-- Deployment target: Vercel
+- Next.js 16.2 (App Router, Turbopack) + Tailwind CSS 4 + TypeScript + Framer Motion
+- Deployment target: Vercel today; a move to Railway is planned, see `.claude/plans/railway-migration.md`
 
 ## Architecture
 - Dual-identity site: vantixe.com (consulting, bright theme) + vantixe.ai (technology, dark theme)
@@ -17,11 +17,11 @@
 - Read `DEPLOYMENT.md` for full infrastructure, DNS, and deployment details before making deployment-related changes or assumptions.
 
 ## Key Directories
-- `app/` — Next.js App Router pages
+- `app/`: Next.js App Router pages
 - `app/technology/`: Dark-themed tech pages (TPRM, Autonomous Sourcing, Category Strategy)
-- `components/consulting/` — Bright theme consulting sections
-- `components/technology/` — Dark theme tech sections
-- `components/ui/` — Shared UI components
-- `components/animations/` — Framer Motion animation wrappers
-- `lib/` — Product data, integration data, utilities
-- `public/images/` — Static assets
+- `components/consulting/`: Bright theme consulting sections
+- `components/technology/`: Dark theme tech sections
+- `components/ui/`: Shared UI components
+- `components/animations/`: Framer Motion animation wrappers
+- `lib/`: Product data, integration data, utilities
+- `public/images/`: Static assets

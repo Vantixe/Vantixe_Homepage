@@ -53,12 +53,115 @@ async function verifyTurnstile(token: string, secret: string, remoteIp?: string)
   body.append('response', token)
   if (remoteIp) body.append('remoteip', remoteIp)
 
+  // Bounded: without a timeout a degraded verification service holds a request
+  // slot for minutes on a single-instance container. Throwing here fails the
+  // submission closed, which is the safe direction.
   const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
     method: 'POST',
     body,
+    signal: AbortSignal.timeout(5000),
   })
   const data = (await res.json()) as { success?: boolean; 'error-codes'?: string[] }
   return Boolean(data.success)
+}
+
+/** Best-effort client address. Cloudflare's header first when it is in front. */
+function clientIp(req: NextRequest): string {
+  return (
+    req.headers.get('cf-connecting-ip') ||
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    'unknown'
+  )
+}
+
+/**
+ * In-process submission limit.
+ *
+ * Every accepted submission sends mail from a verified domain to the single
+ * lead inbox, so unchecked volume costs money, buries real enquiries and puts
+ * the sending domain's reputation at risk. Vercel's plan cap used to be a crude
+ * backstop; a usage-metered host has none, so the limit has to live here.
+ *
+ * One instance serves the site, so in-memory is sufficient and needs no
+ * dependency. It resets on deploy, which is acceptable: this exists to stop
+ * sustained scripted abuse, not to be an audit record.
+ */
+const RATE_WINDOW_MS = 10 * 60 * 1000
+const RATE_PER_IP = 5
+/**
+ * Shared hourly ceiling. Deliberately far above real enquiry volume: it is a
+ * runaway backstop, not a live control.
+ *
+ * It must never be cheap to fill, because a full bucket closes the form for
+ * everyone, and the form is the site's only conversion path under paid ads. So
+ * the counter is incremented only for submissions that have already passed the
+ * bot check (see recordSend), which prices a denial-of-service at one solved
+ * challenge per slot instead of one empty POST per slot.
+ */
+const RATE_GLOBAL_PER_HOUR = Number(process.env.CONTACT_GLOBAL_HOURLY_LIMIT || 500)
+const ipHits = new Map<string, number[]>()
+let globalHits: number[] = []
+let warnedUnknownIp = false
+let warnedGlobalCeiling = 0
+
+/**
+ * Read-only check, run early so an abusive caller is refused cheaply.
+ * Nothing is counted here: see recordSend.
+ */
+function rateLimited(ip: string): false | 'ip' | 'global' {
+  const now = Date.now()
+
+  globalHits = globalHits.filter((t) => now - t < 60 * 60 * 1000)
+  if (globalHits.length >= RATE_GLOBAL_PER_HOUR) {
+    // Silence here would make a site-wide outage invisible, so say it, at most
+    // once a minute to avoid drowning the log.
+    if (now - warnedGlobalCeiling > 60_000) {
+      warnedGlobalCeiling = now
+      console.error(`[contact] global hourly ceiling of ${RATE_GLOBAL_PER_HOUR} reached: the form is refusing every visitor until it drains`)
+    }
+    return 'global'
+  }
+
+  // An unresolvable address would otherwise put every visitor in one bucket and
+  // throttle the whole world to a handful of messages, indistinguishable from
+  // working. Skip the per-IP limit instead, and say so once.
+  if (ip === 'unknown') {
+    if (!warnedUnknownIp) {
+      warnedUnknownIp = true
+      console.error('[contact] no client address on the request: the per-visitor rate limit is inactive, only the global ceiling applies')
+    }
+    return false
+  }
+
+  const recent = (ipHits.get(ip) || []).filter((t) => now - t < RATE_WINDOW_MS)
+  if (recent.length >= RATE_PER_IP) {
+    ipHits.set(ip, recent)
+    return 'ip'
+  }
+  return false
+}
+
+/**
+ * Count one accepted submission. Called only after the bot check has passed and
+ * immediately before the mail is sent, so a rejected or unverified request
+ * cannot spend either budget. Counting attempts rather than sends would let
+ * three mistyped fields lock a real visitor out for ten minutes.
+ */
+function recordSend(ip: string): void {
+  const now = Date.now()
+  globalHits.push(now)
+  if (ip === 'unknown') return
+
+  const recent = (ipHits.get(ip) || []).filter((t) => now - t < RATE_WINDOW_MS)
+  recent.push(now)
+  ipHits.set(ip, recent)
+
+  // Keep the map from growing without bound on a long-lived process.
+  if (ipHits.size > 5000) {
+    for (const [key, times] of ipHits) {
+      if (times.every((t) => now - t >= RATE_WINDOW_MS)) ipHits.delete(key)
+    }
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -70,8 +173,24 @@ export async function POST(req: NextRequest) {
   }
 
   // Honeypot: silently accept (200) so bots think they succeeded, but don't send.
+  // Checked before the rate limit on purpose: a bot filling the honeypot must
+  // not be able to spend the budget that real visitors share.
   if (payload.website && payload.website.trim() !== '') {
     return NextResponse.json({ ok: true })
+  }
+
+  const ip = clientIp(req)
+  const limited = rateLimited(ip)
+  if (limited) {
+    return NextResponse.json(
+      {
+        error:
+          limited === 'global'
+            ? 'We are receiving an unusual number of messages right now. Please email hello@vantixe.com and we will pick it up straight away.'
+            : 'Too many messages from this connection. Please try again shortly, or email hello@vantixe.com.',
+      },
+      { status: 429 }
+    )
   }
 
   // Validate required fields
@@ -100,15 +219,38 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Please choose which product you’d like to see.' }, { status: 400 })
   }
 
-  // Turnstile verification (only if configured)
+  // Turnstile verification. This endpoint never sends mail without a verified
+  // token unless someone has explicitly said otherwise.
+  //
+  // The condition is deliberately keyed on RUNTIME variables only. An earlier
+  // version guarded on NEXT_PUBLIC_TURNSTILE_SITE_KEY, which Next replaces with
+  // a literal at build time: built without that variable, the whole guard was
+  // dead code and eliminated from the bundle, so the endpoint silently reverted
+  // to sending unverified mail. That is precisely the state a fresh deployment
+  // with a missed build variable produces, which made the guard absent exactly
+  // when it was needed. Verified by grepping the compiled output of two builds.
+  //
+  // ALLOW_UNVERIFIED_CONTACT=1 is the explicit opt-out, for local development
+  // and for a deployment that has deliberately chosen honeypot-only protection.
   const turnstileSecret = process.env.TURNSTILE_SECRET_KEY
+  if (!turnstileSecret && process.env.ALLOW_UNVERIFIED_CONTACT !== '1') {
+    console.error('[contact] TURNSTILE_SECRET_KEY is not set: refusing to accept submissions unverified (set ALLOW_UNVERIFIED_CONTACT=1 to allow honeypot-only protection)')
+    return NextResponse.json(
+      { error: 'The form is temporarily unavailable. Please email hello@vantixe.com.' },
+      { status: 500 }
+    )
+  }
+  // The mirror mistake: a secret configured but no public key, so no widget ever
+  // renders and every submission fails the token check with nothing in the log.
+  if (turnstileSecret && !process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) {
+    console.error('[contact] TURNSTILE_SECRET_KEY is set but NEXT_PUBLIC_TURNSTILE_SITE_KEY was missing at build time: the widget cannot render, so every submission will be rejected')
+  }
   if (turnstileSecret) {
     const token = String(payload.turnstileToken || '')
     if (!token) {
       return NextResponse.json({ error: 'Please complete the verification challenge.' }, { status: 400 })
     }
-    const ip = req.headers.get('cf-connecting-ip') || req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined
-    const ok = await verifyTurnstile(token, turnstileSecret, ip)
+    const ok = await verifyTurnstile(token, turnstileSecret, ip === 'unknown' ? undefined : ip)
     if (!ok) {
       return NextResponse.json({ error: 'Verification failed. Please try again.' }, { status: 400 })
     }
@@ -169,6 +311,11 @@ export async function POST(req: NextRequest) {
       .filter(([, v]) => v != null && String(v).trim() !== '')
       .map(([k, v]) => `${k}: ${v}`)
       .join('\n') + `\n\nMessage:\n${message}\n`
+
+  // Count the submission only now: it has passed the honeypot, validation and
+  // the bot check, so a slot costs an attacker a solved challenge rather than
+  // an empty POST.
+  recordSend(ip)
 
   try {
     const resend = new Resend(apiKey)

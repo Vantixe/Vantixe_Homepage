@@ -143,6 +143,9 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 | `scripts/check-invariants.mjs` | Runs before every build: one booking URL, one tag loader each, no em dashes |
 | `scripts/verify-tracking.mjs` | Browser check of the redirect and /book behaviour against the dev server (plain and tagged runs) |
 | `scripts/serve-tagged.mjs` | Production build + server on 4001 with fake tracking ids for the tagged run |
+| `scripts/check-invariants.selftest.mjs` | Deliberately breaks each invariant and asserts the check goes red. A gate never seen to fail is not known to work |
+| `scripts/verify-deployment.mjs` | Behaviour checks against a running server: cache headers, the bot check, the host guard, the rate limit, apex and www redirects, the two-domain split |
+| `railway.json` | Railway build and deploy config. Pinned to one instance because the contact form's rate limit lives in process memory |
 | `vercel.json` | Pins the build command to `npm run build` so the invariant check runs on Vercel too |
 | `app/globals.css` | Tailwind theme tokens (bright + dark palettes) |
 
@@ -156,7 +159,23 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 | `NEXT_PUBLIC_LINKEDIN_PARTNER_ID` | LinkedIn Insight Tag. Production only, never set locally |
 | `NEXT_PUBLIC_LINKEDIN_BOOKING_CONVERSION_ID` | Optional event-specific LinkedIn conversion fired on `/book` |
 
-`NEXT_PUBLIC_*` values are inlined at build time: set them in Vercel before deploying.
+Two of these are true secrets (`RESEND_API_KEY`, `TURNSTILE_SECRET_KEY`), two have safe
+defaults (`CONTACT_FROM_EMAIL`, `CONTACT_TO_EMAIL`), and the four `NEXT_PUBLIC_*` values are
+public by design: they are baked into the JavaScript at BUILD time, so changing one needs a
+rebuild, not a restart, and a missing one produces a page that looks correct while tracking
+nothing.
+
+Optional, both runtime only:
+
+| Variable | Purpose |
+|----------|---------|
+| `CONTACT_GLOBAL_HOURLY_LIMIT` | Shared hourly cap on contact form sends. Defaults to 500 |
+| `ALLOW_UNVERIFIED_CONTACT` | Set to `1` ONLY to run the form with no bot check. Without a Turnstile secret the endpoint otherwise refuses every submission, by design |
+| `EXTRA_API_HOSTS` | Extra hostnames allowed to reach `/api/*`, comma separated. Its only intended use is a temporary platform URL during a migration. Every cold start logs a warning while it is set. Clear it afterwards |
+
+**Never set `NODE_ENV` as a service variable.** The build tools live in devDependencies, so
+`NODE_ENV=production` makes the install skip them and the build fails on a missing Tailwind
+plugin.
 
 ## Conversion Tracking
 
@@ -183,12 +202,28 @@ phone on mobile data or in Campaign Manager.
    Google and LinkedIn request is blocked by the script) and `npm run verify:tracking:tagged`:
    strict, SKIP counts as failure.
 4. Owner walkthrough in the browser on localhost:4000.
-5. `git status` shows only what is meant to ship: `npx vercel --prod` deploys the working
-   directory, not git HEAD.
+5. `npm run check:selftest`: every invariant check proven to fail when broken.
+6. `npm run verify:deploy` against a local `next start`: PASS with no failures.
+7. `git status` shows only what is meant to ship. Note `npx vercel --prod` deploys the WORKING
+   DIRECTORY, not git HEAD. Railway is the opposite: it builds what is on the deploy branch in
+   GitHub, so nothing local can be shipped by accident, and nothing local ships at all.
 
 ## Important Notes
 
-- **Do not enable GitHub auto-deploy** - the repo is under a GitHub Organization (Vantixe), which requires Vercel Pro plan for auto-deploy. Use `npx vercel --prod` instead.
-- **Cloudflare proxy must be disabled** (grey cloud / DNS only) for all Vercel-pointed records. Orange cloud breaks Vercel SSL.
+- **Auto-deploy, while on Vercel:** not enabled. The repo is under a GitHub Organization,
+  which needs a paid Vercel plan for it. Ship with `npx vercel --prod`.
+  **After the Railway move:** auto-deploy runs from a dedicated `production` branch, never
+  from `main`, so an ordinary push cannot reach the live site. Shipping is then
+  `git push origin main:production`, and that push is what needs the owner's approval.
+- **Cloudflare proxy, while on Vercel:** must stay OFF (grey cloud) for every record pointing
+  at Vercel. The orange cloud breaks Vercel's certificate handling.
+  **After the Railway move:** the proxy goes ON, but only once Railway has issued its
+  certificates against DNS that already points at it, and the zone's SSL mode must be set to
+  Full (strict). Turning both on at once prevents the certificate ever being issued.
+  `/videos/*` must be excluded from the Cloudflare cache: their terms restrict serving video
+  through the CDN without a paid video product, and the two promo films loop on both homepages.
+- **Replacing anything in `public/`** now needs a Cloudflare cache purge for that path. The
+  cache headers deliberately avoid `immutable` so a replaced file reaches visitors within a
+  day, but the edge still holds the old copy until it is purged.
 - **Old GitHub Pages setup is replaced** - the CNAME file and GitHub Pages config are no longer used.
 - **Port 4000** is reserved for this project in `C:\Claude_Apps\.env.ports`.

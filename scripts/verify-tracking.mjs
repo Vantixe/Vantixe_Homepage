@@ -21,8 +21,69 @@ import { readFileSync } from 'node:fs'
 import { chromium } from 'playwright-core'
 
 const TAGGED = process.argv.includes('--tagged')
-const BASE = process.env.VERIFY_BASE_URL || (TAGGED ? 'http://localhost:4001' : 'http://localhost:4000')
+let BASE = process.env.VERIFY_BASE_URL || (TAGGED ? 'http://localhost:4001' : 'http://localhost:4000')
 const STRICT = TAGGED || process.env.VERIFY_STRICT === '1'
+
+/**
+ * Require the production tags to be present rather than discovering whether
+ * they are.
+ *
+ * Without this the suite probes the homepage and, finding no tag, inverts every
+ * assertion into "correctly absent" and records SKIP. Against a server that is
+ * SUPPOSED to be tagged, that is the failure reported as a pass. STRICT alone
+ * turns those SKIPs red but says only "SKIP is a failure", which does not tell
+ * the reader that a tag is missing. Set this whenever the target is expected to
+ * be fully configured, such as any deployed environment.
+ */
+const EXPECT_TAGS = TAGGED || process.env.VERIFY_EXPECT_TAGS === '1'
+
+/**
+ * Exercise the two-domain behaviour against a server whose DNS name is not yet
+ * the real one. Set VERIFY_AS_HOST=vantixe.ai and the suite drives the browser
+ * at that hostname while resolving it to whatever VERIFY_BASE_URL points at.
+ *
+ * Note for anyone tempted to simplify this: passing the Host header directly,
+ * via Playwright's extraHTTPHeaders or Node's fetch, does NOT work. Node's
+ * fetch silently ignores it and Chromium rejects the navigation with
+ * ERR_INVALID_ARGUMENT. Both were measured against a control. Resolver rules
+ * are the only approach that produces a real Host header.
+ */
+const RAW_URL = new URL(BASE)
+const AS_HOST = (process.env.VERIFY_AS_HOST || '').trim()
+if (AS_HOST) {
+  BASE = `${RAW_URL.protocol}//${AS_HOST}${RAW_URL.port ? ':' + RAW_URL.port : ''}`
+}
+const LAUNCH_ARGS = AS_HOST
+  ? [`--host-resolver-rules=MAP ${AS_HOST} ${RAW_URL.hostname}`, '--ignore-certificate-errors']
+  : []
+const CONTEXT_OPTIONS = AS_HOST ? { ignoreHTTPSErrors: true } : {}
+
+/**
+ * Plain HTTP GET that reaches the real address while presenting the hostname
+ * under test. Used where a browser is overkill; fetch cannot do this because it
+ * drops a Host override.
+ */
+async function getText(path) {
+  const mod = RAW_URL.protocol === 'https:' ? await import('node:https') : await import('node:http')
+  return new Promise((resolve, reject) => {
+    const req = mod.request(
+      {
+        host: RAW_URL.hostname,
+        port: RAW_URL.port || (RAW_URL.protocol === 'https:' ? 443 : 80),
+        path,
+        headers: { Host: AS_HOST || RAW_URL.host },
+        rejectUnauthorized: false,
+      },
+      (res) => {
+        let body = ''
+        res.on('data', (d) => { body += d })
+        res.on('end', () => resolve({ status: res.statusCode, body, headers: res.headers }))
+      }
+    )
+    req.on('error', reject)
+    req.end()
+  })
+}
 
 /** Read, never retype: lib/booking.ts is the single holder of this URL. */
 const BOOKING_URL = readFileSync(new URL('../lib/booking.ts', import.meta.url), 'utf8').match(/'(https:\/\/outlook[^']+)'/)[1]
@@ -41,7 +102,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 async function serverUp() {
   try {
-    const res = await fetch(BASE + '/', { redirect: 'manual' })
+    const res = await getText('/')
     return res.status < 500
   } catch {
     return false
@@ -88,7 +149,7 @@ async function blockThirdParties(page, { licdn = 'abort' } = {}) {
 }
 
 async function formContext(browser, extraInit) {
-  const ctx = await browser.newContext()
+  const ctx = await browser.newContext(CONTEXT_OPTIONS)
   await ctx.addInitScript(TURNSTILE_STUB)
   if (extraInit) await ctx.addInitScript(extraInit)
   return ctx
@@ -137,7 +198,7 @@ async function run() {
   }
   let browser
   try {
-    browser = await chromium.launch({ channel: 'msedge', headless: true })
+    browser = await chromium.launch({ channel: 'msedge', headless: true, args: LAUNCH_ARGS })
   } catch (e) {
     console.error('verify-tracking: could not launch Microsoft Edge via playwright-core. ' + e.message)
     process.exit(2)
@@ -152,10 +213,16 @@ async function run() {
   // Capability probe: which production-only tags does this server render? Read
   // from the server HTML (the loader snippets are part of it), not from the DOM,
   // which only gains the script elements after hydration.
-  const homeHtml = await (await fetch(BASE + '/')).text()
+  const homeHtml = (await getText('/')).body
   const hasInsightTag = homeHtml.includes('snap.licdn.com')
   const hasGtm = homeHtml.includes('googletagmanager.com/gtm.js')
-  console.log(`server ${BASE}: insight tag ${hasInsightTag ? 'ON' : 'off'}, GTM ${hasGtm ? 'ON' : 'off'}${STRICT ? ', strict mode' : ''}\n`)
+  console.log(`server ${BASE}${AS_HOST ? ` (as ${AS_HOST}, resolved to ${RAW_URL.host})` : ''}: insight tag ${hasInsightTag ? 'ON' : 'off'}, GTM ${hasGtm ? 'ON' : 'off'}${STRICT ? ', strict mode' : ''}\n`)
+
+  // When the target is supposed to be fully configured, a missing tag is the
+  // defect this suite exists to find. Say so here, once, instead of letting a
+  // dozen cases quietly invert themselves into "correctly absent" and pass.
+  if (EXPECT_TAGS && !hasInsightTag) record('probe. server renders the LinkedIn Insight Tag', 'FAIL', 'NEXT_PUBLIC_LINKEDIN_PARTNER_ID is not set on this server, but this run requires it')
+  if (EXPECT_TAGS && !hasGtm) record('probe. server renders Google Tag Manager', 'FAIL', 'NEXT_PUBLIC_GTM_ID is not set on this server, but this run requires it')
 
   // a. Both new pages: 200, noindex, an h1, and the Insight Tag injected exactly
   //    once. Tag presence is observed from inside the page (console channel):
@@ -163,7 +230,7 @@ async function run() {
   //    lookups from outside would wait on that pending navigation.
   for (const path of ['/thank-you', '/book']) {
     try {
-      const ctx = await browser.newContext()
+      const ctx = await browser.newContext(CONTEXT_OPTIONS)
       await ctx.addInitScript(`
         new MutationObserver((muts) => {
           for (const m of muts) for (const n of m.addedNodes) {
@@ -415,7 +482,7 @@ async function run() {
   {
     const name = 'g1. /book redirects to Bookings only after the Insight Tag has loaded'
     try {
-      const ctx = await browser.newContext()
+      const ctx = await browser.newContext(CONTEXT_OPTIONS)
       // Stand-in tag element with the selector BookRedirect polls for; served slowly so
       // "waited for the tag" is falsifiable. The real tag (when rendered) hits the same route.
       await ctx.addInitScript(`
@@ -454,7 +521,7 @@ async function run() {
   {
     const name = 'g2. /book still redirects when the Insight Tag is blocked'
     try {
-      const ctx = await browser.newContext()
+      const ctx = await browser.newContext(CONTEXT_OPTIONS)
       await ctx.addInitScript(`
         document.addEventListener('DOMContentLoaded', () => {
           const s = document.createElement('script');
@@ -481,7 +548,7 @@ async function run() {
   {
     const name = 'g3. /book queues the conversion event through the Insight Tag shim'
     try {
-      const ctx = await browser.newContext()
+      const ctx = await browser.newContext(CONTEXT_OPTIONS)
       // No pre-stub: intercept the assignment BookRedirect makes, then watch its queue.
       await ctx.addInitScript(`
         Object.defineProperty(window, 'lintrk', {

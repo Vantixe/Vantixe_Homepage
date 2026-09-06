@@ -8,10 +8,10 @@ Dual-domain website for Vantixe Advisory Limited - procurement consulting (vanti
 
 ## Stack
 
-- **Next.js 15** (App Router) + TypeScript
+- **Next.js 16.2** (App Router) + TypeScript
 - **Tailwind CSS 4** for styling
 - **Framer Motion** for animations
-- **Vercel** for hosting
+- **Vercel** for hosting (moving to Railway, see `DEPLOYMENT.md`)
 - **Cloudflare** for DNS
 
 ## Domains
