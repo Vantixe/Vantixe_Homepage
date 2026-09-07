@@ -169,7 +169,7 @@ Optional, both runtime only:
 
 | Variable | Purpose |
 |----------|---------|
-| `CONTACT_GLOBAL_HOURLY_LIMIT` | Shared hourly cap on contact form messages actually sent. Defaults to 20, set by the owner. Only successful sends count, so filling it costs an attacker a solved bot challenge each. Note the consequence: once 20 genuine messages arrive within an hour the form turns everyone else away until the oldest ages out |
+| `CONTACT_GLOBAL_HOURLY_LIMIT` | Shared hourly cap on contact form messages actually sent. Defaults to 50, set by the owner. Only successful sends count, so filling it costs an attacker a solved bot challenge each. Note the consequence: once 50 genuine messages arrive within an hour the form turns everyone else away until the oldest ages out |
 | `ALLOW_UNVERIFIED_CONTACT` | Set to `1` ONLY to run the form with no bot check. Without a Turnstile secret the endpoint otherwise refuses every submission, by design |
 | `EXTRA_API_HOSTS` | Extra hostnames allowed to reach `/api/*`, comma separated. Its only intended use is a temporary platform URL during a migration. Every cold start logs a warning while it is set. Clear it afterwards |
 

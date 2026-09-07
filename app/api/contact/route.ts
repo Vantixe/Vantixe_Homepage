@@ -98,7 +98,7 @@ const RATE_PER_IP = 5
  * bot check (see recordSend), which prices a denial-of-service at one solved
  * challenge per slot instead of one empty POST per slot.
  */
-const RATE_GLOBAL_PER_HOUR = Number(process.env.CONTACT_GLOBAL_HOURLY_LIMIT || 20)
+const RATE_GLOBAL_PER_HOUR = Number(process.env.CONTACT_GLOBAL_HOURLY_LIMIT || 50)
 const ipHits = new Map<string, number[]>()
 let globalHits: number[] = []
 let warnedUnknownIp = false
