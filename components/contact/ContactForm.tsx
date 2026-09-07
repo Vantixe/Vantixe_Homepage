@@ -32,6 +32,12 @@ const THANK_YOU_PATH = '/thank-you'
 const GTM_EVENT_TIMEOUT_MS = 1500
 /** If the browser never left (navigation blocked), show the inline confirmation instead. */
 const SUCCESS_FALLBACK_MS = 4000
+/**
+ * How long to wait for the bot check before telling the visitor it did not load.
+ * Generous: a normal solve is well under three seconds, so this only fires when
+ * something is genuinely blocking Cloudflare.
+ */
+const TURNSTILE_TIMEOUT_MS = 15000
 
 declare global {
   interface Window {
@@ -60,6 +66,14 @@ export function ContactForm({ turnstileSiteKey, gtmConfigured = false }: Contact
   const turnstileRef = useRef<HTMLDivElement>(null)
   const widgetIdRef = useRef<string | null>(null)
   const [turnstileToken, setTurnstileToken] = useState<string>('')
+  /** Mirrors turnstileToken. The watchdog below closes over stale state otherwise. */
+  const turnstileTokenRef = useRef('')
+  /**
+   * The bot check could not load or gave up. The submit button stays disabled
+   * either way (never send unverified), but the visitor is told why and given
+   * another way to reach us, instead of staring at a dead button.
+   */
+  const [turnstileUnavailable, setTurnstileUnavailable] = useState(false)
 
   // Redirect bookkeeping. Refs, not state: the GTM callback and the fallback
   // timer both close over these, and exactly one of them may navigate.
@@ -106,29 +120,54 @@ export function ContactForm({ turnstileSiteKey, gtmConfigured = false }: Contact
       if (widgetIdRef.current) return // already rendered
       widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
         sitekey: turnstileSiteKey,
-        callback: (token: string) => setTurnstileToken(token),
-        'error-callback': () => setTurnstileToken(''),
-        'expired-callback': () => setTurnstileToken(''),
+        callback: (token: string) => {
+          turnstileTokenRef.current = token
+          setTurnstileToken(token)
+          setTurnstileUnavailable(false)
+        },
+        // Cloudflare reporting a problem it cannot recover from: a hostname
+        // missing from the widget's allowlist, or a challenge that failed.
+        'error-callback': () => {
+          turnstileTokenRef.current = ''
+          setTurnstileToken('')
+          setTurnstileUnavailable(true)
+        },
+        // Expiry is normal and self-healing: the widget fetches a new token, so
+        // drop the spent one without alarming anybody.
+        'expired-callback': () => {
+          turnstileTokenRef.current = ''
+          setTurnstileToken('')
+        },
         theme: 'light',
       })
     }
 
+    // Neither callback fires when the script never runs at all, which is the
+    // common case: an extension, a corporate proxy or a DNS filter blocking
+    // Cloudflare. Without this the visitor is left with a completed form, a
+    // permanently dead button and no explanation, and the enquiry is lost with
+    // nothing recorded anywhere.
+    const watchdog = setTimeout(() => {
+      if (!turnstileTokenRef.current) setTurnstileUnavailable(true)
+    }, TURNSTILE_TIMEOUT_MS)
+
     if (window.turnstile) {
       render()
-      return
+    } else {
+      if (!document.getElementById(SCRIPT_ID)) {
+        const script = document.createElement('script')
+        script.id = SCRIPT_ID
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit'
+        script.async = true
+        script.defer = true
+        script.onerror = () => setTurnstileUnavailable(true)
+        document.head.appendChild(script)
+      }
+      window.onTurnstileLoad = render
     }
-
-    if (!document.getElementById(SCRIPT_ID)) {
-      const script = document.createElement('script')
-      script.id = SCRIPT_ID
-      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit'
-      script.async = true
-      script.defer = true
-      document.head.appendChild(script)
-    }
-    window.onTurnstileLoad = render
 
     return () => {
+      clearTimeout(watchdog)
       if (widgetIdRef.current && window.turnstile) {
         window.turnstile.remove(widgetIdRef.current)
         widgetIdRef.current = null
@@ -149,7 +188,9 @@ export function ContactForm({ turnstileSiteKey, gtmConfigured = false }: Contact
         setStatus('idle')
         // A Turnstile token is single-use and the one in memory was spent on the
         // send that just succeeded. Ask the widget for a fresh one.
+        turnstileTokenRef.current = ''
         setTurnstileToken('')
+        setTurnstileUnavailable(false)
         if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current)
       }
     }
@@ -455,6 +496,16 @@ export function ContactForm({ turnstileSiteKey, gtmConfigured = false }: Contact
       {turnstileSiteKey && (
         <div className="mb-6">
           <div ref={turnstileRef} />
+          {turnstileUnavailable && (
+            <div className="mt-3 p-4 rounded-lg bg-amber-50 border border-amber-200 text-sm text-amber-900">
+              The security check could not load, so this form cannot be sent from this browser.
+              It is usually a browser extension or a network blocking Cloudflare. Please email{' '}
+              <a href="mailto:hello@vantixe.com" className="font-semibold underline">
+                hello@vantixe.com
+              </a>{' '}
+              instead and we will reply within one business day.
+            </div>
+          )}
         </div>
       )}
 

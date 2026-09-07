@@ -27,11 +27,35 @@ const PORT = url.port || (url.protocol === 'https:' ? 443 : 80)
 
 let pass = 0
 let fail = 0
+let skip = 0
 const record = (ok, name, detail = '') => {
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? '  (' + detail + ')' : ''}`)
   if (ok) pass++
   else fail++
 }
+/**
+ * Not testable HERE, as opposed to broken. Reported separately so a run against
+ * a proxied deployment does not print a wall of red that trains the reader to
+ * ignore this script.
+ */
+const skipped = (name, detail) => {
+  console.log(`SKIP  ${name}  (${detail})`)
+  skip++
+}
+
+/**
+ * True when a CDN terminates TLS in front of the origin. Set from the first
+ * response rather than assumed, because it changes what can be proved:
+ *
+ *   Faking a Host header only works when the same connection can present a
+ *   certificate for that name. Node derives the TLS server name from the Host
+ *   header, so against a proxy a faked hostname either fails the handshake or
+ *   is refused by the proxy, and never reaches the app's own host guard.
+ *
+ * That is a STRONGER guarantee than the guard, not a weaker one, but it means
+ * these cases must be reported as untestable rather than as failures.
+ */
+let proxied = false
 
 function request(path, { host, method = 'GET', body = null, headers = {} } = {}) {
   return new Promise((resolve, reject) => {
@@ -74,13 +98,21 @@ const VALID = {
 }
 
 async function run() {
+  let first
   try {
-    await request('/')
+    first = await request('/')
   } catch (e) {
     console.error(`verify-deployment: nothing answering at ${BASE}: ${e.message}`)
     process.exit(2)
   }
-  console.log(`verify-deployment: ${BASE}\n`)
+  const server = String(first.headers.server || '')
+  proxied = /cloudflare|fastly|akamai/i.test(server)
+  console.log(`verify-deployment: ${BASE}`)
+  console.log(
+    proxied
+      ? `  behind a proxy (${server}): faked-hostname cases report SKIP, see the note in this file\n`
+      : '  direct to origin: every case is testable\n'
+  )
 
   // 1. Media carries a real cache lifetime. Served by the app itself once off a
   //    platform that cached them regardless, so without this every visit
@@ -105,8 +137,12 @@ async function run() {
 
   // 3. The API answers only on hostnames we recognise.
   {
-    const bad = await post('/api/contact', {}, { host: 'not-our-domain.example.com' })
-    record(bad.status === 403, 'unknown host cannot reach the API', `status ${bad.status}`)
+    if (proxied) {
+      skipped('unknown host cannot reach the API', 'the proxy rejects an unknown name before the app sees it')
+    } else {
+      const bad = await post('/api/contact', {}, { host: 'not-our-domain.example.com' })
+      record(bad.status === 403, 'unknown host cannot reach the API', `status ${bad.status}`)
+    }
     const good = await post('/api/contact', {}, { host: 'www.vantixe.com' })
     record(good.status !== 403, 'a real host can reach the API', `status ${good.status}`)
   }
@@ -118,7 +154,14 @@ async function run() {
     ['www.vantixe.ai', 'https://vantixe.ai'],
   ]) {
     const root = await request('/', { host })
-    record(root.status === 308 && root.headers.location === want, `${host} redirects to the canonical host`, root.headers.location || `status ${root.status}`)
+    // 301 or 308: on this deployment the .com apex is redirected by a Cloudflare
+    // rule (301) and the .ai www by the app itself (308). Both are permanent and
+    // both preserve the path, which is what actually matters.
+    const permanent = root.status === 301 || root.status === 308
+    // A trailing slash on the root is the same URL. The app omits it, a
+    // Cloudflare rule adds it; neither is a defect, so compare without it.
+    const landed = String(root.headers.location || '').replace(/\/$/, '')
+    record(permanent && landed === want, `${host} redirects to the canonical host`, `${root.status} ${root.headers.location || ''}`)
     const deep = await request('/contact', { host })
     record(deep.headers.location === `${want}/contact`, `${host} keeps the path when redirecting`, deep.headers.location || `status ${deep.status}`)
   }
@@ -135,8 +178,16 @@ async function run() {
     record(ai.status === 200, 'vantixe.ai serves the product pages', `status ${ai.status}`)
     const com = await request('/tprm', { host: 'www.vantixe.com' })
     record(com.status === 404, 'vantixe.com does not serve the .ai paths', `status ${com.status}`)
-    const fake = await request('/tprm', { host: 'vantixe.ai.evil.example' })
-    record(fake.status === 404, 'a lookalike hostname cannot claim the .ai identity', `status ${fake.status}`)
+    // A hostname nothing has a certificate for. Against a proxy the TLS
+    // handshake is refused outright, which throws here; that is the protection
+    // working, so treat it as such rather than letting it abort the run.
+    try {
+      const fake = await request('/tprm', { host: 'vantixe.ai.evil.example' })
+      record(fake.status === 404, 'a lookalike hostname cannot claim the .ai identity', `status ${fake.status}`)
+    } catch (e) {
+      if (proxied) skipped('a lookalike hostname cannot claim the .ai identity', `refused at the TLS layer: ${e.code || e.message}`)
+      else record(false, 'a lookalike hostname cannot claim the .ai identity', e.message)
+    }
     const cookie = String((await request('/', { host: 'vantixe.ai' })).headers['set-cookie'] || '')
     record(/vantixe-domain=ai/.test(cookie), 'the domain cookie is set for .ai', cookie.slice(0, 60))
     record(/SameSite/i.test(cookie), 'the domain cookie carries SameSite', cookie.slice(0, 60))
@@ -168,7 +219,8 @@ async function run() {
     record(r.headers.location === want, `existing redirect still works: ${path}`, r.headers.location || `status ${r.status}`)
   }
 
-  console.log(`\nverify-deployment: PASS ${pass}, FAIL ${fail}`)
+  console.log(`\nverify-deployment: PASS ${pass}, SKIP ${skip}, FAIL ${fail}`)
+  if (skip) console.log('SKIP rows are cases a proxy makes untestable from outside, not defects. Run against the platform URL directly to exercise them.')
   process.exit(fail ? 1 : 0)
 }
 

@@ -14,6 +14,14 @@
  *   npm run serve:tagged              (terminal 1: builds with fake ids, serves on 4001)
  *   npm run verify:tracking:tagged    (terminal 2; strict, SKIP counts as failure)
  *
+ * RUN ONE AT A TIME against a live site. Two browser suites pointed at the same
+ * Cloudflare-fronted origin concurrently produce false failures: pages that do
+ * not finish rendering ("no h1") and, worst of all, "submit was enabled before
+ * any Turnstile token: the spam gate is off". That last one is a lie under load
+ * and was disproved three ways (a disabled button in a screenshot, a real
+ * submission that required a real token, and a clean serial run). Do not relax
+ * that assertion to make a concurrent run pass; run the suites serially.
+ *
  * Exit codes: 0 all green; 1 any FAIL (or any SKIP in strict mode);
  * 2 when the server or Edge is missing.
  */
@@ -49,13 +57,40 @@ const EXPECT_TAGS = TAGGED || process.env.VERIFY_EXPECT_TAGS === '1'
  * are the only approach that produces a real Host header.
  */
 const RAW_URL = new URL(BASE)
+
+/**
+ * The /book timing assertions were calibrated against localhost, where the page
+ * is hydrated in a few milliseconds. Against a real deployment the JavaScript
+ * still has to cross the internet after the document arrives, which adds a
+ * second or two before the redirect logic can run at all, and the checks then
+ * fail for a site that is behaving perfectly.
+ *
+ * So allow for the network, but only when the target is remote, and say so in
+ * the header. The tradeoff is real and deliberate: a genuine slowdown of up to
+ * the allowance would now go unnoticed remotely. Local runs keep the tight
+ * bounds, and they are the ones that gate a release.
+ */
+const IS_REMOTE = !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(RAW_URL.hostname)
+const NET_MS = IS_REMOTE ? Number(process.env.VERIFY_NETWORK_ALLOWANCE_MS || 3000) : 0
 const AS_HOST = (process.env.VERIFY_AS_HOST || '').trim()
 if (AS_HOST) {
   BASE = `${RAW_URL.protocol}//${AS_HOST}${RAW_URL.port ? ':' + RAW_URL.port : ''}`
 }
-const LAUNCH_ARGS = AS_HOST
-  ? [`--host-resolver-rules=MAP ${AS_HOST} ${RAW_URL.hostname}`, '--ignore-certificate-errors']
-  : []
+/**
+ * --disable-quic is not optional against a CDN. Chromium negotiates HTTP/3, and
+ * when a QUIC connection fails under load it surfaces as
+ * ERR_QUIC_PROTOCOL_ERROR or, worse, ERR_CERT_COMMON_NAME_INVALID, which reads
+ * as a broken certificate on a site whose certificate is perfectly valid. That
+ * was measured: six cases failed that way while a concurrent suite was running,
+ * and openssl confirmed the certificate was correct the whole time. A gate that
+ * cries "invalid certificate" at healthy production is worse than no gate.
+ */
+const LAUNCH_ARGS = [
+  '--disable-quic',
+  ...(AS_HOST
+    ? [`--host-resolver-rules=MAP ${AS_HOST} ${RAW_URL.hostname}`, '--ignore-certificate-errors']
+    : []),
+]
 const CONTEXT_OPTIONS = AS_HOST ? { ignoreHTTPSErrors: true } : {}
 
 /**
@@ -216,7 +251,7 @@ async function run() {
   const homeHtml = (await getText('/')).body
   const hasInsightTag = homeHtml.includes('snap.licdn.com')
   const hasGtm = homeHtml.includes('googletagmanager.com/gtm.js')
-  console.log(`server ${BASE}${AS_HOST ? ` (as ${AS_HOST}, resolved to ${RAW_URL.host})` : ''}: insight tag ${hasInsightTag ? 'ON' : 'off'}, GTM ${hasGtm ? 'ON' : 'off'}${STRICT ? ', strict mode' : ''}\n`)
+  console.log(`server ${BASE}${AS_HOST ? ` (as ${AS_HOST}, resolved to ${RAW_URL.host})` : ''}: insight tag ${hasInsightTag ? 'ON' : 'off'}, GTM ${hasGtm ? 'ON' : 'off'}${STRICT ? ', strict mode' : ''}${NET_MS ? `, remote target: +${NET_MS} ms allowed on /book timings` : ''}\n`)
 
   // When the target is supposed to be fully configured, a missing tag is the
   // defect this suite exists to find. Say so here, once, instead of letting a
@@ -504,12 +539,13 @@ async function run() {
       const hop = await holdBookingHop(page)
       await page.goto(BASE + '/book', { waitUntil: 'load' })
       const loadedAt = Date.now()
-      assert(await waitFor(() => hop.url, 6000), 'no navigation to Microsoft Bookings within 6 s of page load')
+      assert(await waitFor(() => hop.url, 6000 + NET_MS), `no navigation to Microsoft Bookings within ${(6000 + NET_MS) / 1000} s of page load`)
       assert(hop.url === BOOKING_URL, `expected ${BOOKING_URL}, got ${hop.url}`)
       assert(marks.tagLoadedAt, 'left before the stand-in Insight Tag had loaded')
       const tagLoadedAt = Number(marks.tagLoadedAt)
+      // Lower bound: a real behavioural claim, so no network allowance here.
       assert(hop.at >= tagLoadedAt + 200, `left ${hop.at - tagLoadedAt} ms after the tag loaded, expected the grace period`)
-      assert(hop.at - loadedAt < 2500, `left ${hop.at - loadedAt} ms after page load, expected well under the cap plus the slow tag`)
+      assert(hop.at - loadedAt < 2500 + NET_MS, `left ${hop.at - loadedAt} ms after page load, expected under ${2500 + NET_MS} ms`)
       await ctx.close()
       record(name, 'PASS', `left ${hop.at - tagLoadedAt} ms after tag load`)
     } catch (e) {
@@ -534,8 +570,8 @@ async function run() {
       const hop = await holdBookingHop(page)
       await page.goto(BASE + '/book', { waitUntil: 'domcontentloaded' })
       const loadedAt = Date.now()
-      assert(await waitFor(() => hop.url, 6000), 'no navigation to Microsoft Bookings within 6 s of page load')
-      assert(hop.at - loadedAt < 2000, `took ${hop.at - loadedAt} ms after page load, expected the error path or the 1200 ms cap`)
+      assert(await waitFor(() => hop.url, 6000 + NET_MS), `no navigation to Microsoft Bookings within ${(6000 + NET_MS) / 1000} s of page load`)
+      assert(hop.at - loadedAt < 2000 + NET_MS, `took ${hop.at - loadedAt} ms after page load, expected under ${2000 + NET_MS} ms`)
       await ctx.close()
       record(name, 'PASS', `${hop.at - loadedAt} ms after page load`)
     } catch (e) {
