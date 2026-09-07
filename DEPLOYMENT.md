@@ -241,10 +241,13 @@ phone on mobile data or in Campaign Manager.
 - **Cloudflare proxy is ON** (orange cloud) on all four homepage hostnames. Railway's one-time
   Cloudflare authorisation set it that way and the certificates issued correctly, so the
   earlier worry that the proxy must start OFF turned out not to apply to this path.
-- **OUTSTANDING: `/videos/*` is not yet excluded from the Cloudflare cache.** Cloudflare's
-  Service-Specific Terms restrict serving video through the CDN without a paid video product,
-  and the two promo films loop on both homepages. Add a Cache Rule bypassing `/videos/*` on
-  both zones. This needs a token with Cache Rules permission; the DNS token cannot do it.
+- **`/videos/*` bypasses the Cloudflare cache**, via a Cache Rule on BOTH zones (they are
+  per-zone and do not carry over). Cloudflare's Application Services terms require a paid
+  product such as Stream to serve video through the CDN, and reserve the right to limit CDN
+  access entirely if you do not. Verified 7 September 2026: `cf-cache-status: DYNAMIC` on all
+  four video URLs, images still `HIT`. The poster JPGs live under `/videos/` so they are
+  bypassed too, which is harmless. If you add a video, it is covered automatically; if you move
+  videos out of `/videos/`, the rule stops protecting you.
 - **OUTSTANDING: `EXTRA_API_HOSTS` is still set** in Railway to the platform URL. It was needed
   only while verifying before DNS moved. Clear it, then redeploy. Every cold start logs a
   warning while it is set.
