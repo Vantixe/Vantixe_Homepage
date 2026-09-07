@@ -6,7 +6,7 @@
 
 ## Stack
 - Next.js 16.2 (App Router, Turbopack) + Tailwind CSS 4 + TypeScript + Framer Motion
-- Deployment target: Vercel today; a move to Railway is planned, see `.claude/plans/railway-migration.md`
+- Deployment: Railway (Pro), auto-deploy from the `production` branch, behind Cloudflare. Migrated from Vercel 7 September 2026
 
 ## Architecture
 - Dual-identity site: vantixe.com (consulting, bright theme) + vantixe.ai (technology, dark theme)

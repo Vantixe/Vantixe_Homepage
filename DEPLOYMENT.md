@@ -9,22 +9,25 @@ One Next.js application serving two domains:
 | **www.vantixe.com** | Consulting / Advisory | Bright |
 | **vantixe.ai** | Technology / Products | Dark |
 
-Both domains point to the same Vercel project. Middleware detects the domain and routes accordingly.
+Both domains point to the same Railway service. Middleware detects the domain and routes accordingly.
 
 ## Stack
 
-- **Framework:** Next.js 15 (App Router) + TypeScript
+- **Framework:** Next.js 16.2 (App Router, Turbopack) + TypeScript
 - **Styling:** Tailwind CSS 4
 - **Animations:** Framer Motion
-- **Hosting:** Vercel (Hobby plan)
+- **Hosting:** Railway (Pro plan), migrated from Vercel on 7 September 2026
+- **CDN / proxy:** Cloudflare, proxied (orange cloud) on all four homepage hostnames
 - **DNS:** Cloudflare (both domains)
 - **Domain registrar:** Cloudflare
 
 ## How It Works
 
 ```
-vantixe.com  -->  Vercel  -->  Consulting pages (/, /about, /services, /contact)
-vantixe.ai   -->  Vercel  -->  Middleware rewrites to /technology/* pages
+vantixe.com      -->  301 to www.vantixe.com   (issued by a Cloudflare rule, not the app)
+www.vantixe.com  -->  Cloudflare  -->  Railway  -->  Consulting pages (/, /about, /services, /contact)
+www.vantixe.ai   -->  308 to vantixe.ai       (issued by the app itself)
+vantixe.ai       -->  Cloudflare  -->  Railway  -->  Middleware rewrites to /technology/* pages
 ```
 
 The middleware (`middleware.ts`) does:
@@ -44,39 +47,51 @@ all work). The rewrite list only maps the `.ai` root paths onto `/technology/*`.
 
 | Type | Name | Content | Proxy |
 |------|------|---------|-------|
-| A | @ | 216.198.79.1 | DNS only |
-| CNAME | www | 55f92a91e4a6e9b3.vercel-dns-017.com. | DNS only |
+| CNAME | @ | krfmpm9p.up.railway.app | Proxied |
+| CNAME | www | eowuchpv.up.railway.app | Proxied |
+| TXT | _railway-verify | railway-verify=a7c3e187... | DNS only |
+| TXT | _railway-verify.www | railway-verify=e94c4709... | DNS only |
 
-**Do not touch:** MX, TXT, NS records (email), CNAME records for agent, tprm, expenses, talentshow (other apps on Railway/Vercel).
+Cloudflare flattens the CNAME at the apex, which is why a CNAME can sit at `@` alongside the
+MX records. The apex A record that pointed at Vercel was removed by Railway's one-time
+Cloudflare authorisation.
+
+**Do not touch:** MX, TXT, NS and SRV records (email and verification), and the CNAME records for
+agent, beone-demo, books, demotprm, expenses, mtr-mcp, talentshow, tprm and the edge-* and
+autodiscover entries. Those are other applications and services. The zone held 37 records after
+the migration; only 4 of them belong to this site.
 
 ### vantixe.ai (Cloudflare)
 
 | Type | Name | Content | Proxy |
 |------|------|---------|-------|
-| A | @ | 216.198.79.1 | DNS only |
-| CNAME | www | 55f92a91e4a6e9b3.vercel-dns-017.com. | DNS only |
-| TXT | _vercel | vc-domain-verify=vantixe... | DNS only |
+| CNAME | @ | hkdafme2.up.railway.app | Proxied |
+| CNAME | www | e7zw1k9l.up.railway.app | Proxied |
+| TXT | _railway-verify | railway-verify=23516481... | DNS only |
+| TXT | _railway-verify.www | railway-verify=d0cc14c7... | DNS only |
+
+**Do not touch:** the `category` and `category-api` CNAMEs (a separate application) or the TXT
+records. One Vercel leftover remains, `TXT _vercel.vantixe.ai`, kept until the Vercel project is
+deleted; it is inert.
 
 ## Deploying
 
 ### Standard deployment (to production)
 
-From the project root:
+Railway auto-deploys from the `production` branch. Nothing on your machine can reach the live
+site, and `main` cannot either, which is the point: an ordinary push is not a deployment.
 
 ```bash
-cd c:\Claude_Apps\Vantixe_Homepage
-npx vercel --prod
+git push origin main:production
 ```
 
-This builds and deploys to both www.vantixe.com and vantixe.ai.
+That push IS the deployment and is the action that needs the owner's approval. Railway builds
+what is on that branch, watch it in the service's Deployments tab.
 
-### Preview deployment (for testing)
+### Rolling back
 
-```bash
-npx vercel
-```
-
-This deploys to a temporary `*.vercel.app` URL for review before going live.
+In Railway, Deployments tab, pick the previous successful deployment and choose Redeploy. That
+is faster and safer than reverting a commit. DNS does not change.
 
 ### Local development
 
@@ -86,13 +101,20 @@ npm run dev
 
 Runs on http://localhost:4000 (port configured in package.json, registered in `C:\Claude_Apps\.env.ports`).
 
-## Vercel Project
+## Railway Service
 
-- **Project name:** vantixe-homepage
-- **Scope:** michael-seitzs-projects
-- **Dashboard:** https://vercel.com/michael-seitzs-projects/vantixe-homepage
-- **Auto-deploy from GitHub:** No (manual deploy via CLI to stay on free plan)
-- **Vercel URL:** vantixe-homepage.vercel.app
+- **Repo:** Vantixe/Vantixe_Homepage
+- **Deploy branch:** `production` (NOT `main`)
+- **Platform URL:** vantixehomepage-production.up.railway.app (kept; used for verification)
+- **Config:** `railway.json`, pinned to one instance
+
+### Vercel, retained for rollback
+
+The Vercel project still exists at https://vercel.com/michael-seitzs-projects/vantixe-homepage
+with its environment variables intact, and `vercel.json` and `.vercelignore` are still in the
+repo. Nothing points at it. To roll back, repoint the four Cloudflare CNAMEs at Vercel:
+`A @ -> 216.198.79.1` and `CNAME www -> 55f92a91e4a6e9b3.vercel-dns-017.com`, proxy OFF.
+Delete the project, those two files and the `_vercel` TXT record once a clean period has passed.
 
 ## Pages
 
@@ -146,10 +168,10 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 | `scripts/check-invariants.selftest.mjs` | Deliberately breaks each invariant and asserts the check goes red. A gate never seen to fail is not known to work |
 | `scripts/verify-deployment.mjs` | Behaviour checks against a running server: cache headers, the bot check, the host guard, the rate limit, apex and www redirects, the two-domain split |
 | `railway.json` | Railway build and deploy config. Pinned to one instance because the contact form's rate limit lives in process memory |
-| `vercel.json` | Pins the build command to `npm run build` so the invariant check runs on Vercel too |
+| `vercel.json` | Left over from Vercel. Retained only so a rollback needs no code change |
 | `app/globals.css` | Tailwind theme tokens (bright + dark palettes) |
 
-## Environment Variables (Vercel Production)
+## Environment Variables (Railway)
 
 | Variable | Purpose |
 |----------|---------|
@@ -204,24 +226,28 @@ phone on mobile data or in Campaign Manager.
 4. Owner walkthrough in the browser on localhost:4000.
 5. `npm run check:selftest`: every invariant check proven to fail when broken.
 6. `npm run verify:deploy` against a local `next start`: PASS with no failures.
-7. `git status` shows only what is meant to ship. Note `npx vercel --prod` deploys the WORKING
-   DIRECTORY, not git HEAD. Railway is the opposite: it builds what is on the deploy branch in
-   GitHub, so nothing local can be shipped by accident, and nothing local ships at all.
+7. `npm run verify:deploy` and `npm run verify:tracking` against the live site after shipping,
+   with `VERIFY_BASE_URL=https://www.vantixe.com`. Note that the host-header cases cannot pass
+   through Cloudflare: it terminates TLS and requires the certificate name to match, so a faked
+   Host either gets a 403 from Cloudflare or fails the handshake outright. That is a stronger
+   protection than the app's own check, not a regression.
+8. Committed and pushed to `main` first. Only then `git push origin main:production`.
 
 ## Important Notes
 
-- **Auto-deploy, while on Vercel:** not enabled. The repo is under a GitHub Organization,
-  which needs a paid Vercel plan for it. Ship with `npx vercel --prod`.
-  **After the Railway move:** auto-deploy runs from a dedicated `production` branch, never
-  from `main`, so an ordinary push cannot reach the live site. Shipping is then
-  `git push origin main:production`, and that push is what needs the owner's approval.
-- **Cloudflare proxy, while on Vercel:** must stay OFF (grey cloud) for every record pointing
-  at Vercel. The orange cloud breaks Vercel's certificate handling.
-  **After the Railway move:** the proxy goes ON, but only once Railway has issued its
-  certificates against DNS that already points at it, and the zone's SSL mode must be set to
-  Full (strict). Turning both on at once prevents the certificate ever being issued.
-  `/videos/*` must be excluded from the Cloudflare cache: their terms restrict serving video
-  through the CDN without a paid video product, and the two promo films loop on both homepages.
+- **Auto-deploy** runs from the `production` branch, never from `main`, so an ordinary push
+  cannot reach the live site. Shipping is `git push origin main:production`, and that push is
+  what needs the owner's approval.
+- **Cloudflare proxy is ON** (orange cloud) on all four homepage hostnames. Railway's one-time
+  Cloudflare authorisation set it that way and the certificates issued correctly, so the
+  earlier worry that the proxy must start OFF turned out not to apply to this path.
+- **OUTSTANDING: `/videos/*` is not yet excluded from the Cloudflare cache.** Cloudflare's
+  Service-Specific Terms restrict serving video through the CDN without a paid video product,
+  and the two promo films loop on both homepages. Add a Cache Rule bypassing `/videos/*` on
+  both zones. This needs a token with Cache Rules permission; the DNS token cannot do it.
+- **OUTSTANDING: `EXTRA_API_HOSTS` is still set** in Railway to the platform URL. It was needed
+  only while verifying before DNS moved. Clear it, then redeploy. Every cold start logs a
+  warning while it is set.
 - **Replacing anything in `public/`** now needs a Cloudflare cache purge for that path. The
   cache headers deliberately avoid `immutable` so a replaced file reaches visitors within a
   day, but the edge still holds the old copy until it is purged.

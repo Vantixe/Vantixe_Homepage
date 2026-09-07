@@ -11,7 +11,7 @@ Dual-domain website for Vantixe Advisory Limited - procurement consulting (vanti
 - **Next.js 16.2** (App Router) + TypeScript
 - **Tailwind CSS 4** for styling
 - **Framer Motion** for animations
-- **Vercel** for hosting (moving to Railway, see `DEPLOYMENT.md`)
+- **Railway** for hosting, behind Cloudflare (see `DEPLOYMENT.md`)
 - **Cloudflare** for DNS
 
 ## Domains
@@ -31,7 +31,7 @@ npm run dev       # http://localhost:4000
 ## Deploy
 
 ```bash
-npx vercel --prod
+git push origin main:production
 ```
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for full infrastructure details, DNS config and page inventory.
