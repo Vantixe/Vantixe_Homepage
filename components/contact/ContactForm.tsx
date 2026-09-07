@@ -33,11 +33,16 @@ const GTM_EVENT_TIMEOUT_MS = 1500
 /** If the browser never left (navigation blocked), show the inline confirmation instead. */
 const SUCCESS_FALLBACK_MS = 4000
 /**
- * How long to wait for the bot check before telling the visitor it did not load.
- * Generous: a normal solve is well under three seconds, so this only fires when
- * something is genuinely blocking Cloudflare.
+ * Two thresholds, because "the script never loaded" and "the challenge is taking
+ * a while" deserve different patience.
+ *
+ * A script that never ran is definitive and worth reporting quickly. A widget
+ * that HAS rendered may simply be waiting on a person to click an interactive
+ * challenge, and telling them it failed while they are solving it would send a
+ * live lead to email for no reason. So the second threshold is generous.
  */
-const TURNSTILE_TIMEOUT_MS = 15000
+const TURNSTILE_SCRIPT_TIMEOUT_MS = 10000
+const TURNSTILE_SOLVE_TIMEOUT_MS = 40000
 
 declare global {
   interface Window {
@@ -147,9 +152,18 @@ export function ContactForm({ turnstileSiteKey, gtmConfigured = false }: Contact
     // Cloudflare. Without this the visitor is left with a completed form, a
     // permanently dead button and no explanation, and the enquiry is lost with
     // nothing recorded anywhere.
-    const watchdog = setTimeout(() => {
+    const scriptWatchdog = setTimeout(() => {
+      const neverAppeared = !window.turnstile || !widgetIdRef.current
+      if (!turnstileTokenRef.current && neverAppeared) setTurnstileUnavailable(true)
+    }, TURNSTILE_SCRIPT_TIMEOUT_MS)
+
+    // The widget rendered but no token ever arrived: a challenge that cannot
+    // complete for this visitor. Slower to fire, so somebody working through an
+    // interactive challenge is not interrupted. If they do solve it, the success
+    // callback clears the notice again.
+    const solveWatchdog = setTimeout(() => {
       if (!turnstileTokenRef.current) setTurnstileUnavailable(true)
-    }, TURNSTILE_TIMEOUT_MS)
+    }, TURNSTILE_SOLVE_TIMEOUT_MS)
 
     if (window.turnstile) {
       render()
@@ -167,7 +181,8 @@ export function ContactForm({ turnstileSiteKey, gtmConfigured = false }: Contact
     }
 
     return () => {
-      clearTimeout(watchdog)
+      clearTimeout(scriptWatchdog)
+      clearTimeout(solveWatchdog)
       if (widgetIdRef.current && window.turnstile) {
         window.turnstile.remove(widgetIdRef.current)
         widgetIdRef.current = null
