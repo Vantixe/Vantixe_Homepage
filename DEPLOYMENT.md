@@ -71,8 +71,7 @@ the migration; only 4 of them belong to this site.
 | TXT | _railway-verify.www | railway-verify=d0cc14c7... | DNS only |
 
 **Do not touch:** the `category` and `category-api` CNAMEs (a separate application) or the TXT
-records. One Vercel leftover remains, `TXT _vercel.vantixe.ai`, kept until the Vercel project is
-deleted; it is inert.
+records.
 
 ## Deploying
 
@@ -108,13 +107,11 @@ Runs on http://localhost:4000 (port configured in package.json, registered in `C
 - **Platform URL:** vantixehomepage-production.up.railway.app (kept; used for verification)
 - **Config:** `railway.json`, pinned to one instance
 
-### Vercel, retained for rollback
+### Vercel, decommissioned
 
-The Vercel project still exists at https://vercel.com/michael-seitzs-projects/vantixe-homepage
-with its environment variables intact, and `vercel.json` and `.vercelignore` are still in the
-repo. Nothing points at it. To roll back, repoint the four Cloudflare CNAMEs at Vercel:
-`A @ -> 216.198.79.1` and `CNAME www -> 55f92a91e4a6e9b3.vercel-dns-017.com`, proxy OFF.
-Delete the project, those two files and the `_vercel` TXT record once a clean period has passed.
+The Vercel project was deleted on 15 September 2026, after a clean week on Railway, and
+`vercel.json` and `.vercelignore` were removed from the repo. There is no fallback host: rolling
+back means redeploying an earlier Railway deployment (see Rolling back above).
 
 ## Pages
 
@@ -168,7 +165,6 @@ Delete the project, those two files and the `_vercel` TXT record once a clean pe
 | `scripts/check-invariants.selftest.mjs` | Deliberately breaks each invariant and asserts the check goes red. A gate never seen to fail is not known to work |
 | `scripts/verify-deployment.mjs` | Behaviour checks against a running server: cache headers, the bot check, the host guard, the rate limit, apex and www redirects, the two-domain split |
 | `railway.json` | Railway build and deploy config. Pinned to one instance because the contact form's rate limit lives in process memory |
-| `vercel.json` | Left over from Vercel. Retained only so a rollback needs no code change |
 | `app/globals.css` | Tailwind theme tokens (bright + dark palettes) |
 
 ## Environment Variables (Railway)

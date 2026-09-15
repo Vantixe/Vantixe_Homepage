@@ -8,7 +8,7 @@ const PARTNER_ID = process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID
  * Powers LinkedIn Ads conversion tracking, website retargeting audiences and
  * website demographics. Renders nothing unless NEXT_PUBLIC_LINKEDIN_PARTNER_ID
  * is set, so local development never sends traffic to LinkedIn: the variable is
- * set in the Vercel Production environment only.
+ * set in the Railway production service only.
  *
  * One install here covers BOTH vantixe.com and vantixe.ai, because they are
  * served from the same Next.js deployment (see middleware.ts).

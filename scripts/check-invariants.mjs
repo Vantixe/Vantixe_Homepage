@@ -197,8 +197,7 @@ if (!declared) {
   }
 }
 
-// 6. Internal notes must stay out of any deployment. .vercelignore carries this
-//    today and is deleted once the move is finished, so assert the property
+// 6. Internal notes must stay out of any deployment. Assert the property
 //    against .gitignore, which is what a git-based deploy actually reads.
 let gitignore = ''
 try {
