@@ -113,6 +113,10 @@ The Vercel project was deleted on 15 September 2026, after a clean week on Railw
 `vercel.json` and `.vercelignore` were removed from the repo. There is no fallback host: rolling
 back means redeploying an earlier Railway deployment (see Rolling back above).
 
+The migration plan called for rotating `RESEND_API_KEY` and `TURNSTILE_SECRET_KEY` at this point.
+The owner decided on 15 September 2026 not to rotate them, as no one else holds them. Rotate
+only if a machine or chat log holding them is lost or shared.
+
 ## Pages
 
 ### Consulting (www.vantixe.com)
