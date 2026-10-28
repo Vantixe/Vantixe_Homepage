@@ -51,9 +51,13 @@ probe('railway.json is unparseable', () => {
   writeFileSync(RAILWAY, '{ this is not json')
 }, /not valid JSON/)
 
-probe('builder switched away from NIXPACKS', () => {
+probe('builder switched away from RAILPACK', () => {
   const j = readJson(RAILWAY); j.build.builder = 'DOCKERFILE'; writeJson(RAILWAY, j)
-}, /build\.builder must be NIXPACKS/)
+}, /build\.builder must be RAILPACK/)
+
+probe('builder switched back to NIXPACKS (stuck on a vulnerable Node)', () => {
+  const j = readJson(RAILWAY); j.build.builder = 'NIXPACKS'; writeJson(RAILWAY, j)
+}, /build\.builder must be RAILPACK/)
 
 probe('build command bypasses the invariant script', () => {
   const j = readJson(RAILWAY); j.build.buildCommand = 'next build'; writeJson(RAILWAY, j)
@@ -104,7 +108,19 @@ probe('replica count raised above one, silently weakening the rate limit', () =>
 
 probe('engines.node written as a range this check cannot compare', () => {
   const p = readJson(PKG); p.engines = { node: '>=20 <23' }; writeJson(PKG, p)
-}, /must be exactly "<major>\.x"/)
+}, /must be exactly "<major>\.x" or "<major>\.<minor>\.<patch>"/)
+
+// The exact pin is a security floor: a host older than it must go red. The
+// pin is derived from the host so the probe bites on any machine.
+probe('exact engines.node pin newer than the build host', () => {
+  const [ma, mi, pa] = process.versions.node.split('.').map(Number)
+  const p = readJson(PKG); p.engines = { node: `${ma}.${mi}.${pa + 1}` }; writeJson(PKG, p)
+}, /does not satisfy package\.json engines\.node/)
+
+probe('exact engines.node pin on a different major than the build host', () => {
+  const [ma] = process.versions.node.split('.').map(Number)
+  const p = readJson(PKG); p.engines = { node: `${ma + 2}.0.0` }; writeJson(PKG, p)
+}, /does not satisfy package\.json engines\.node/)
 
 probe('gitignore stops excluding internal notes', () => {
   const g = readFileSync(GITIGNORE, 'utf8').split(/\r?\n/).filter((l) => l.trim() !== '.claude/').join('\n')

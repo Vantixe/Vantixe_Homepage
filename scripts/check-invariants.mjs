@@ -121,9 +121,14 @@ if (railway !== undefined && (railway === null || typeof railway !== 'object' ||
 }
 
 if (railway) {
-  // 5a. The builder decides whether build-time variables reach the bundle.
-  if (railway.build?.builder !== 'NIXPACKS') {
-    failures.push(`railway.json build.builder must be NIXPACKS, found ${JSON.stringify(railway.build?.builder)}`)
+  // 5a. The builder decides whether build-time variables reach the bundle, and
+  //   which Node the host runs. Railpack installs the exact engines.node pin;
+  //   Nixpacks resolved Node from a frozen package set that stopped at a
+  //   vulnerable 22.x (CVE-2026-111497). After any builder change, prove on the
+  //   live site that the NEXT_PUBLIC_* values arrived: the Turnstile widget on
+  //   /contact, the GTM id and the LinkedIn tag on every page.
+  if (railway.build?.builder !== 'RAILPACK') {
+    failures.push(`railway.json build.builder must be RAILPACK, found ${JSON.stringify(railway.build?.builder)}`)
   }
   // 5b + 5c. The build must go through npm run build, AND prebuild must still
   //   be this file. Either alone is bypassable: rewriting the build command
@@ -183,17 +188,29 @@ if (railway) {
 // The format is constrained on purpose rather than parsing semver by hand. A
 // naive "first number in the string" comparison FALSE-FAILS on ordinary ranges
 // (">=20 <23" and "20 || 22" both read as 20) and would block a legitimate
-// deploy from the build host, with a misleading message. Requiring an exact
-// major keeps this dependency-free file honest about what it can check.
+// deploy from the build host, with a misleading message. Two formats are
+// accepted and nothing else: "<major>.x" (same major) and an exact
+// "<major>.<minor>.<patch>" pin (same major, and this patch level or newer, so
+// a security pin refuses an older host but a newer patch on a laptop builds).
 const declared = pkg.engines?.node
 if (!declared) {
   failures.push('package.json declares no engines.node, so the build host is free to pick any Node version')
 } else {
-  const m = String(declared).match(/^(\d+)\.x$/)
-  if (!m) {
-    failures.push(`package.json engines.node must be exactly "<major>.x" so this check can compare it reliably, found ${JSON.stringify(declared)}`)
-  } else if (m[1] !== process.versions.node.split('.')[0]) {
-    failures.push(`Node ${process.versions.node} does not satisfy package.json engines.node "${declared}"`)
+  const host = process.versions.node.split('.').map(Number)
+  const major = String(declared).match(/^(\d+)\.x$/)
+  const exact = String(declared).match(/^(\d+)\.(\d+)\.(\d+)$/)
+  if (major) {
+    if (Number(major[1]) !== host[0]) {
+      failures.push(`Node ${process.versions.node} does not satisfy package.json engines.node "${declared}"`)
+    }
+  } else if (exact) {
+    const pin = exact.slice(1).map(Number)
+    const older = host[1] < pin[1] || (host[1] === pin[1] && host[2] < pin[2])
+    if (host[0] !== pin[0] || older) {
+      failures.push(`Node ${process.versions.node} does not satisfy package.json engines.node "${declared}" (same major, this patch level or newer)`)
+    }
+  } else {
+    failures.push(`package.json engines.node must be exactly "<major>.x" or "<major>.<minor>.<patch>" so this check can compare it reliably, found ${JSON.stringify(declared)}`)
   }
 }
 
